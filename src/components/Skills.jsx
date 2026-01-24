@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { 
   SiHtml5, SiCss3, SiJavascript, SiReact, SiLaravel, 
   SiTailwindcss, SiBootstrap, SiPhp, SiGit, SiGithub 

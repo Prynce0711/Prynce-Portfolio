@@ -1,5 +1,3 @@
-import React from 'react';
-
 function Hero() {
   return (
     <section className="relative bg-gray-50 dark:bg-gray-900 min-h-screen flex items-center overflow-hidden">
