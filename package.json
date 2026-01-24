@@ -33,5 +33,10 @@
   "main": "eslint.config.js",
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+
+   "start": "react-scripts start",
+  "build": "react-scripts build"
+
+  
 }
