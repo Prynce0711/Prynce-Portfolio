@@ -12,7 +12,7 @@ const projectData = [
     description: "A personal collection of my work built with Laravel. Showcasing my early journey in full-stack development.",
     tags: ["TailwindCSS", "React", "Laravel"],
     image: "portfolio.png",
-    link: "https://prynce-carlo-portfolio.vercel.app/",
+    link: "https://prynce-portfolio.vercel.app",
   },
 
 ];
