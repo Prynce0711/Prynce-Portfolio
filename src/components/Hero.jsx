@@ -1,6 +1,6 @@
 function Hero() {
   return (
-    <section className="relative bg-gray-50 dark:bg-gray-900 min-h-screen flex items-center overflow-hidden">
+    <section id="hero" className="relative bg-gray-50 dark:bg-gray-900 min-h-screen flex items-center overflow-hidden">
       {/* Background Decorative Blob (Optional) */}
       <div className="absolute top-0 right-0 -mr-20 -mt-20 hidden lg:block">
         <div className="w-96 h-96 bg-blue-500/20 blur-3xl rounded-full mix-blend-multiply dark:mix-blend-overlay animate-blob"></div>
