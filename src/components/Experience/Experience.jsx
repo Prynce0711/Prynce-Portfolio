@@ -1,11 +1,12 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from "react";
+import Experiences from "./Experiences";
 
 const Experience = () => {
   const vantaRef = useRef(null);
 
   useEffect(() => {
     let vantaEffect = null;
-    
+
     // Check if VANTA is available on the window object
     if (window.VANTA && vantaRef.current) {
       vantaEffect = window.VANTA.NET({
@@ -13,15 +14,15 @@ const Experience = () => {
         mouseControls: true,
         touchControls: true,
         gyroControls: false,
-        minHeight: 200.00,
-        minWidth: 200.00,
-        scale: 1.00,
-        scaleMobile: 1.00,
+        minHeight: 200.0,
+        minWidth: 200.0,
+        scale: 1.0,
+        scaleMobile: 1.0,
         color: 0xe3e3e3,
         backgroundColor: 0x110d18,
-        points: 15.00,
-        maxDistance: 19.00,
-        spacing: 17.00
+        points: 15.0,
+        maxDistance: 19.0,
+        spacing: 17.0,
       });
     }
 
@@ -31,43 +32,13 @@ const Experience = () => {
     };
   }, []);
 
-  const experiences = [
-    {
-      title: "Service Crew",
-      company: "Jolly Management Solutions inc. - Greenwich",
-      year: "2023",
-      desc: "Developed and maintained web applications using PHP and modern CSS frameworks. Collaborated with a team to build functional and responsive systems."
-    },
-    {
-      title: "Product Re-packer",
-      company: "Gorgeous Glow",
-      year: "2023",
-      desc: "Designed and built responsive websites for personal clients, focusing on clean UI/UX, accessibility, and performance."
-    },
-    {
-      title: "Assistant Merchandizer",
-      company: "Pandayan Bookshop",
-      year: "2025",
-      desc: "Led the development of an academic web system as a capstone project, handling both frontend and backend logic."
-    },
-    {
-      title: "Sales Agent",
-      company: "Converge ICT Solutions",
-      year: "2022 - 2025",
-      desc: "Led the development of an academic web system as a capstone project, handling both frontend and backend logic."
-    }
-  ];
-
   return (
-    <section 
-      id="experience" 
+    <section
+      id="experience"
       className="relative min-h-screen pt-24 transition-colors duration-300 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 overflow-hidden"
     >
       {/* Vanta Background Container */}
-      <div 
-        ref={vantaRef} 
-        className="absolute inset-0 z-0"
-      />
+      <div ref={vantaRef} className="absolute inset-0 z-0" />
 
       <div className="relative z-10 p-8">
         <div className="text-center mb-12">
@@ -78,7 +49,7 @@ const Experience = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-          {experiences.map((exp, index) => (
+          {Experiences.map((exp, index) => (
             <div
               key={index}
               className="card bg-white/10 backdrop-blur-md w-full shadow-2xl hover:shadow-blue-500/20 transition-all duration-500 rounded-3xl border border-white/10 group"

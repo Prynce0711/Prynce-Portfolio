@@ -1,70 +1,44 @@
-import Navbar from "./components/Navbar";
+import Navigation from "./components/Navigation";
 import Hero from "./components/Hero";
 import About from "./components/About";
-import Projects from "./components/Projects";
+import Projects from "./components/Project";
 import Skills from "./components/Skills";
-import Experience from "./components/experience";
+import Experience from "./components/Experience";
 import Contact from "./components/Contact";
-// eslint-disable-next-line no-unused-vars
+import Footer from "./components/Footer";
 import { motion } from "framer-motion";
 
-const SectionTranstion = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+const sectionTransition = {
+  hidden: { opacity: 0.85, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 1,
+      ease: [0.25, 0.1, 0.25, 1],
+    },
+  },
 };
 
 function App() {
+  const sections = [Hero, About, Projects, Skills, Experience, Contact];
+
   return (
-      <div className="App">
-      <Navbar />
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        variants={SectionTranstion}
-        viewport={{ margin: "-100px" }}
-      >
-        <Hero />
-      </motion.div>
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        variants={SectionTranstion}
-        viewport={{ margin: "-100px" }}
-      >
-        <About />
-      </motion.div>
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        variants={SectionTranstion}
-        viewport={{ margin: "-100px" }}
-      >
-        <Projects />
-      </motion.div>
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        variants={SectionTranstion}
-        viewport={{ margin: "-100px" }}
-      >
-        <Skills />
-      </motion.div>
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        variants={SectionTranstion}
-        viewport={{ margin: "-100px" }}
-      >
-        <Experience />
-      </motion.div>
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        variants={SectionTranstion}
-        viewport={{ margin: "-100px" }}
-      >
-        <Contact />
-      </motion.div>
+    <div className="App overflow-x-hidden">
+      <Navigation />
+
+      {sections.map((Section, index) => (
+        <motion.div
+          key={index}
+          initial="hidden"
+          whileInView="visible"
+          variants={sectionTransition}
+          viewport={{ once: true, amount: 0.2 }}
+        >
+          <Section />
+        </motion.div>
+      ))}
+      <Footer />
     </div>
   );
 }
