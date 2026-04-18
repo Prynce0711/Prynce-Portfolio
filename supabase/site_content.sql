@@ -420,6 +420,8 @@ values (
 )
 on conflict (id) do nothing;
 
+drop table if exists public.site_content cascade;
+
 insert into storage.buckets (id, name, public)
 values ('portfolio-assets', 'portfolio-assets', true)
 on conflict (id) do update set public = excluded.public;

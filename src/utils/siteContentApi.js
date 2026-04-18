@@ -4,8 +4,6 @@ import {
 } from "../data/defaultSiteContent";
 import { isSupabaseConfigured, supabase } from "./supabase/client";
 
-const LEGACY_SITE_CONTENT_TABLE = "site_content";
-
 const SECTION_TABLE_MAP = {
   hero: "site_content_hero",
   about: "site_content_about",
@@ -147,17 +145,6 @@ const isEmptyObject = (value) => {
   );
 };
 
-const isRelationMissingError = (error) => {
-  const message = error?.message?.toLowerCase() || "";
-  const code = error?.code || "";
-
-  return (
-    code === "42P01" ||
-    message.includes("does not exist") ||
-    message.includes("relation")
-  );
-};
-
 const getSectionTableName = (sectionKey) => {
   return SECTION_TABLE_MAP[sectionKey];
 };
@@ -211,44 +198,6 @@ const fetchSiteContentFromSectionTables = async (fallbackContent) => {
   return Object.fromEntries(sectionEntries);
 };
 
-const fetchSiteContentFromLegacyTable = async (fallbackContent) => {
-  const { data, error } = await supabase
-    .from(LEGACY_SITE_CONTENT_TABLE)
-    .select("section, content");
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  const rowsBySection = new Map(
-    (data || [])
-      .filter((row) => typeof row?.section === "string")
-      .map((row) => [row.section, row.content]),
-  );
-
-  const resolvedContent = getDefaultContent();
-
-  editableSectionKeys.forEach((sectionKey) => {
-    const rowContent = rowsBySection.get(sectionKey);
-
-    if (
-      !rowContent ||
-      typeof rowContent !== "object" ||
-      isEmptyObject(rowContent)
-    ) {
-      resolvedContent[sectionKey] = getNoDataSectionContent(sectionKey);
-      return;
-    }
-
-    resolvedContent[sectionKey] = mergeWithDefaults(
-      fallbackContent[sectionKey],
-      rowContent,
-    );
-  });
-
-  return resolvedContent;
-};
-
 const saveSectionToSectionTable = async (sectionKey, sectionContent) => {
   const sectionTableName = getSectionTableName(sectionKey);
 
@@ -266,31 +215,8 @@ const saveSectionToSectionTable = async (sectionKey, sectionContent) => {
     onConflict: "id",
   });
 
-  if (!error) {
-    return;
-  }
-
-  if (!isRelationMissingError(error)) {
+  if (error) {
     throw new Error(error.message);
-  }
-
-  const { error: legacyError } = await supabase
-    .from(LEGACY_SITE_CONTENT_TABLE)
-    .upsert(
-      {
-        section: sectionKey,
-        content: sectionContent ?? {},
-        updated_at: new Date().toISOString(),
-      },
-      {
-        onConflict: "section",
-      },
-    );
-
-  if (legacyError) {
-    throw new Error(
-      `Section table save failed: ${error.message}. Legacy fallback also failed: ${legacyError.message}`,
-    );
   }
 };
 
@@ -314,17 +240,7 @@ export const fetchSiteContent = async () => {
   try {
     return await fetchSiteContentFromSectionTables(fallbackContent);
   } catch (error) {
-    if (!isRelationMissingError(error)) {
-      throw new Error(error.message || "Failed to fetch section tables.");
-    }
-  }
-
-  try {
-    return await fetchSiteContentFromLegacyTable(fallbackContent);
-  } catch (legacyError) {
-    throw new Error(
-      `Failed to fetch content from section tables and legacy table. ${legacyError.message}`,
-    );
+    throw new Error(error.message || "Failed to fetch section tables.");
   }
 };
 
