@@ -7,11 +7,8 @@ import {
   uploadPortfolioImage,
 } from "../utils/supabase/storageApi";
 
-const uploadStatusToneClass = {
-  success: "text-emerald-600",
-  error: "text-rose-600",
-  idle: "text-slate-500",
-};
+
+
 
 const HeroAdmin = () => {
   const { siteContent, setSectionContent } = useSiteContent();
@@ -95,8 +92,8 @@ const HeroAdmin = () => {
           onChange={(value) => updateHero("imageSrc", value)}
           hint="Use a public URL or a file name from public/."
         />
-        <div className="flex flex-col gap-2">
-          <span className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+          <span style={{ fontSize: "10.5px", fontWeight: 700, letterSpacing: "0.13em", textTransform: "uppercase", color: "#475569" }}>
             Upload Hero Image
           </span>
           <input
@@ -104,27 +101,46 @@ const HeroAdmin = () => {
             accept="image/*"
             onChange={handleHeroImageUpload}
             disabled={uploadState.isUploading}
-            className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 shadow-sm outline-none transition file:mr-3 file:rounded-lg file:border-0 file:bg-slate-900 file:px-3 file:py-2 file:text-xs file:font-semibold file:text-white"
+            style={{
+              width: "100%",
+              boxSizing: "border-box",
+              padding: "8px 12px",
+              borderRadius: "10px",
+              border: "1px solid rgba(255,255,255,0.08)",
+              background: "rgba(255,255,255,0.04)",
+              color: "#94a3b8",
+              fontSize: "13px",
+              cursor: uploadState.isUploading ? "not-allow" : "pointer",
+              fontFamily: "inherit",
+            }}
           />
-          <p className="text-xs text-slate-500">
+          <p style={{ fontSize: "11.5px", color: "#334155", margin: 0 }}>
             Uploads to bucket: {getStorageBucketName()}
           </p>
           {uploadState.message ? (
-            <p className={`text-xs ${uploadStatusToneClass[uploadState.type]}`}>
+            <p
+              style={{
+                fontSize: "12px",
+                margin: 0,
+                color:
+                  uploadState.type === "success" ? "#6ee7b7" :
+                  uploadState.type === "error" ? "#fca5a5" : "#64748b",
+              }}
+            >
               {uploadState.message}
             </p>
           ) : null}
         </div>
 
         {hero.imageSrc ? (
-          <div className="md:col-span-2 overflow-hidden rounded-xl border border-slate-200 bg-slate-50 p-3">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.1em] text-slate-500">
+          <div style={{ gridColumn: "span 2", overflow: "hidden", borderRadius: "12px", border: "1px solid rgba(255,255,255,0.07)", background: "rgba(255,255,255,0.03)", padding: "10px" }}>
+            <p style={{ marginBottom: "8px", fontSize: "10.5px", fontWeight: 700, letterSpacing: "0.13em", textTransform: "uppercase", color: "#475569" }}>
               Hero Preview
             </p>
             <img
               src={hero.imageSrc}
               alt={hero.imageAlt || "Hero preview"}
-              className="h-52 w-full rounded-lg object-cover"
+              style={{ height: "200px", width: "100%", borderRadius: "8px", objectFit: "cover" }}
             />
           </div>
         ) : null}
@@ -134,7 +150,7 @@ const HeroAdmin = () => {
           value={hero.imageAlt}
           onChange={(value) => updateHero("imageAlt", value)}
         />
-        <div className="md:col-span-2 h-px bg-slate-200" />
+        <div style={{ gridColumn: "span 2", height: "1px", background: "rgba(255,255,255,0.05)" }} />
         <InputField
           label="Primary Button Text"
           value={hero.primaryButtonText}

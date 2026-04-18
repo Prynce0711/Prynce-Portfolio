@@ -116,34 +116,72 @@ const AdminApp = () => {
 
   if (!isSupabaseConfigured) {
     return (
-      <div className="min-h-screen bg-slate-950 px-4 py-10 text-slate-100">
-        <div className="mx-auto w-full max-w-2xl rounded-3xl border border-slate-700 bg-slate-900 p-6">
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-cyan-300">
+      <div
+        style={{
+          minHeight: "100vh",
+          background: "radial-gradient(ellipse at 70% 0%, rgba(6,182,212,0.07) 0%, transparent 55%), #080d1a",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "2rem",
+        }}
+      >
+        <div
+          style={{
+            width: "100%",
+            maxWidth: "580px",
+            background: "rgba(15,23,42,0.75)",
+            backdropFilter: "blur(20px)",
+            WebkitBackdropFilter: "blur(20px)",
+            border: "1px solid rgba(255,255,255,0.07)",
+            borderRadius: "24px",
+            padding: "2.5rem",
+            boxShadow: "0 25px 60px rgba(0,0,0,0.5)",
+          }}
+        >
+          <p style={{ margin: 0, fontSize: "10px", fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", color: "#06b6d4" }}>
             Admin Setup
           </p>
-          <h1 className="mt-2 text-3xl font-black">Missing Supabase Config</h1>
-          <p className="mt-3 text-sm text-slate-300">
-            Add the required variables in your local env file before using admin
-            login and save features.
+          <h1 style={{ marginTop: "8px", fontSize: "26px", fontWeight: 900, color: "#f1f5f9" }}>Missing Supabase Config</h1>
+          <p style={{ marginTop: "10px", fontSize: "13px", color: "#94a3b8", lineHeight: 1.6 }}>
+            Add the required variables in your local env file before using admin login and save features.
           </p>
-
-          <pre className="mt-4 overflow-x-auto rounded-xl border border-slate-700 bg-slate-950 p-4 text-xs text-cyan-200">
-            {`VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_PUBLISHABLE_KEY=your_publishable_key
-VITE_ADMIN_EMAILS=admin@example.com
-VITE_SUPABASE_STORAGE_BUCKET=portfolio-assets`}
+          <pre
+            style={{
+              marginTop: "1.25rem",
+              overflowX: "auto",
+              borderRadius: "12px",
+              border: "1px solid rgba(6,182,212,0.15)",
+              background: "rgba(6,182,212,0.04)",
+              padding: "1rem",
+              fontSize: "12px",
+              color: "#67e8f9",
+              lineHeight: 1.7,
+            }}
+          >
+            {`VITE_SUPABASE_URL=https://your-project.supabase.co\nVITE_SUPABASE_PUBLISHABLE_KEY=your_publishable_key\nVITE_ADMIN_EMAILS=admin@example.com\nVITE_SUPABASE_STORAGE_BUCKET=portfolio-assets`}
           </pre>
-
-          <p className="mt-3 text-xs text-slate-400">
+          <p style={{ marginTop: "10px", fontSize: "12px", color: "#475569" }}>
             After updating env, restart the Vite dev server.
           </p>
-
-          <div className="mt-5">
+          <div style={{ marginTop: "1.5rem" }}>
             <Link
               to="/"
-              className="inline-flex rounded-xl border border-cyan-300 bg-cyan-50 px-4 py-2 text-sm font-semibold text-cyan-800 transition hover:bg-cyan-100"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                padding: "8px 18px",
+                borderRadius: "10px",
+                border: "1px solid rgba(6,182,212,0.3)",
+                background: "rgba(6,182,212,0.08)",
+                color: "#67e8f9",
+                fontSize: "13px",
+                fontWeight: 600,
+                textDecoration: "none",
+              }}
             >
-              Back to Portfolio
+              ← Back to Portfolio
             </Link>
           </div>
         </div>
@@ -153,8 +191,15 @@ VITE_SUPABASE_STORAGE_BUCKET=portfolio-assets`}
 
   if (authLoading) {
     return (
-      <div className="grid min-h-screen place-items-center bg-slate-900 text-slate-100">
-        <p className="text-sm tracking-wide text-slate-300">
+      <div
+        style={{
+          minHeight: "100vh",
+          background: "#080d1a",
+          display: "grid",
+          placeItems: "center",
+        }}
+      >
+        <p style={{ fontSize: "13px", letterSpacing: "0.06em", color: "#475569" }}>
           Checking session...
         </p>
       </div>
