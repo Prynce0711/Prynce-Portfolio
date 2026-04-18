@@ -77,3 +77,39 @@ If you want Supabase-focused coding skills:
 ```bash
 npx skills add supabase/agent-skills
 ```
+
+## Vercel Blocked Deployment Meaning
+
+If you see this Vercel message:
+
+`The deployment was blocked because the commit author did not have contributing access to the project on Vercel.`
+
+it means your project is using Vercel Git auto-deploy, but the commit author is not recognized as a collaborator for that Vercel project. On Hobby plan with private repos, team collaboration is limited, so the auto-deploy gets blocked.
+
+## Vercel via GitHub Actions
+
+This repo includes a workflow at `.github/workflows/vercel-deploy.yml` that deploys with Vercel CLI using your own token.
+
+### Required GitHub Secrets
+
+Add these in GitHub repository settings under Secrets and variables > Actions:
+
+- `VERCEL_TOKEN`
+- `VERCEL_ORG_ID`
+- `VERCEL_PROJECT_ID`
+
+You can get IDs from local Vercel link:
+
+```bash
+vercel link
+cat .vercel/project.json
+```
+
+### Workflow Behavior
+
+- Push to `main`: production deploy
+- Pull request to `main`: preview deploy (non-fork PRs)
+
+### Important
+
+If you keep Vercel Git integration enabled, you may still see blocked auto-deploy entries from Git integration while GitHub Actions deploys succeed. To avoid confusion, use one deployment path consistently.
