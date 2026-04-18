@@ -4,11 +4,101 @@ import {
 } from "../data/defaultSiteContent";
 import { isSupabaseConfigured, supabase } from "./supabase/client";
 
-const SITE_CONTENT_TABLE = "site_content";
-const SITE_CONTENT_STORAGE_ROOT = "site-content";
-const SITE_CONTENT_STORAGE_FILE = "content.json";
-const SITE_CONTENT_STORAGE_BUCKET =
-  import.meta.env.VITE_SUPABASE_STORAGE_BUCKET || "portfolio-assets";
+const LEGACY_SITE_CONTENT_TABLE = "site_content";
+
+const SECTION_TABLE_MAP = {
+  hero: "site_content_hero",
+  about: "site_content_about",
+  projects: "site_content_projects",
+  skills: "site_content_skills",
+  experience: "site_content_experience",
+  contact: "site_content_contact",
+  footer: "site_content_footer",
+};
+
+const NO_DATA_TEXT = "No data found in section.";
+const NO_DATA_IMAGE_URL = "https://via.placeholder.com/960x540?text=No+Data";
+
+const NO_DATA_SECTION_CONTENT = {
+  hero: {
+    firstName: NO_DATA_TEXT,
+    lastName: NO_DATA_TEXT,
+    roleText: NO_DATA_TEXT,
+    primaryButtonText: NO_DATA_TEXT,
+    primaryButtonHref: "#",
+    secondaryButtonText: NO_DATA_TEXT,
+    secondaryButtonHref: "#",
+    imageSrc: NO_DATA_IMAGE_URL,
+    imageAlt: NO_DATA_TEXT,
+  },
+  about: {
+    fullText: NO_DATA_TEXT,
+  },
+  projects: {
+    titleLead: NO_DATA_TEXT,
+    titleHighlight: NO_DATA_TEXT,
+    description: NO_DATA_TEXT,
+    items: [
+      {
+        title: NO_DATA_TEXT,
+        description: NO_DATA_TEXT,
+        tags: [NO_DATA_TEXT],
+        image: NO_DATA_IMAGE_URL,
+        link: "#",
+      },
+    ],
+  },
+  skills: {
+    title: NO_DATA_TEXT,
+    subtitle: NO_DATA_TEXT,
+    groups: [
+      {
+        category: NO_DATA_TEXT,
+        skills: [
+          {
+            name: NO_DATA_TEXT,
+            iconKey: "react",
+            color: "text-slate-500",
+          },
+        ],
+      },
+    ],
+  },
+  experience: {
+    title: NO_DATA_TEXT,
+    subtitle: NO_DATA_TEXT,
+    items: [
+      {
+        title: NO_DATA_TEXT,
+        company: NO_DATA_TEXT,
+        year: NO_DATA_TEXT,
+        desc: NO_DATA_TEXT,
+      },
+    ],
+  },
+  contact: {
+    titleLead: NO_DATA_TEXT,
+    titleHighlight: NO_DATA_TEXT,
+    description: NO_DATA_TEXT,
+    availabilityText: NO_DATA_TEXT,
+    socials: [
+      {
+        name: NO_DATA_TEXT,
+        value: NO_DATA_TEXT,
+        iconKey: "link",
+        link: "#",
+        color: "bg-slate-200 text-slate-700",
+      },
+    ],
+  },
+  footer: {
+    headlinePrefix: NO_DATA_TEXT,
+    ownerName: NO_DATA_TEXT,
+    rightsText: NO_DATA_TEXT,
+    madeWithLabel: NO_DATA_TEXT,
+    techStack: [NO_DATA_TEXT],
+  },
+};
 
 const deepClone = (value) => {
   if (typeof structuredClone === "function") {
@@ -48,92 +138,166 @@ const mergeWithDefaults = (fallbackValue, incomingValue) => {
   return incomingValue ?? fallbackValue;
 };
 
-const getSectionStorageObjectPath = (sectionKey) => {
-  return `${SITE_CONTENT_STORAGE_ROOT}/${sectionKey}/${SITE_CONTENT_STORAGE_FILE}`;
-};
-
-const isStorageObjectMissingError = (error) => {
-  const message = error?.message?.toLowerCase() || "";
-  const statusCode = Number(error?.statusCode || error?.status || 0);
-
+const isEmptyObject = (value) => {
   return (
-    statusCode === 404 ||
-    message.includes("not found") ||
-    message.includes("does not exist") ||
-    message.includes("object not found") ||
-    message.includes("no such object")
+    Boolean(value) &&
+    typeof value === "object" &&
+    !Array.isArray(value) &&
+    Object.keys(value).length === 0
   );
 };
 
-const fetchAllSectionsFromStorage = async () => {
+const isRelationMissingError = (error) => {
+  const message = error?.message?.toLowerCase() || "";
+  const code = error?.code || "";
+
+  return (
+    code === "42P01" ||
+    message.includes("does not exist") ||
+    message.includes("relation")
+  );
+};
+
+const getSectionTableName = (sectionKey) => {
+  return SECTION_TABLE_MAP[sectionKey];
+};
+
+const getNoDataSectionContent = (sectionKey) => {
+  return deepClone(NO_DATA_SECTION_CONTENT[sectionKey] || {});
+};
+
+const fetchSectionFromSectionTable = async (sectionKey, fallbackSection) => {
+  const sectionTableName = getSectionTableName(sectionKey);
+
+  if (!sectionTableName) {
+    throw new Error(`No section table mapping for key: ${sectionKey}`);
+  }
+
+  const { data, error } = await supabase
+    .from(sectionTableName)
+    .select("content")
+    .eq("id", 1)
+    .maybeSingle();
+
+  if (error) {
+    throw error;
+  }
+
+  const rowContent = data?.content;
+
+  if (
+    !rowContent ||
+    typeof rowContent !== "object" ||
+    isEmptyObject(rowContent)
+  ) {
+    return getNoDataSectionContent(sectionKey);
+  }
+
+  return mergeWithDefaults(fallbackSection, rowContent);
+};
+
+const fetchSiteContentFromSectionTables = async (fallbackContent) => {
   const sectionEntries = await Promise.all(
     editableSectionKeys.map(async (sectionKey) => {
-      const objectPath = getSectionStorageObjectPath(sectionKey);
-      const { data, error } = await supabase.storage
-        .from(SITE_CONTENT_STORAGE_BUCKET)
-        .download(objectPath);
+      const sectionContent = await fetchSectionFromSectionTable(
+        sectionKey,
+        fallbackContent[sectionKey],
+      );
 
-      if (error) {
-        if (isStorageObjectMissingError(error)) {
-          return [sectionKey, null];
-        }
-
-        throw new Error(
-          `Storage read failed for section "${sectionKey}": ${error.message}`,
-        );
-      }
-
-      if (!data) {
-        return [sectionKey, null];
-      }
-
-      const rawText = await data.text();
-
-      if (!rawText.trim()) {
-        return [sectionKey, null];
-      }
-
-      let parsedContent;
-
-      try {
-        parsedContent = JSON.parse(rawText);
-      } catch {
-        throw new Error(
-          `Storage content for section "${sectionKey}" is not valid JSON.`,
-        );
-      }
-
-      return [sectionKey, parsedContent];
+      return [sectionKey, sectionContent];
     }),
   );
 
   return Object.fromEntries(sectionEntries);
 };
 
-const saveSectionToStorage = async (sectionKey, sectionContent) => {
-  const objectPath = getSectionStorageObjectPath(sectionKey);
-  const payload = JSON.stringify(sectionContent ?? {}, null, 2);
-  const fileBlob = new Blob([payload], { type: "application/json" });
-
-  const { error } = await supabase.storage
-    .from(SITE_CONTENT_STORAGE_BUCKET)
-    .upload(objectPath, fileBlob, {
-      upsert: true,
-      cacheControl: "0",
-      contentType: "application/json",
-    });
+const fetchSiteContentFromLegacyTable = async (fallbackContent) => {
+  const { data, error } = await supabase
+    .from(LEGACY_SITE_CONTENT_TABLE)
+    .select("section, content");
 
   if (error) {
+    throw new Error(error.message);
+  }
+
+  const rowsBySection = new Map(
+    (data || [])
+      .filter((row) => typeof row?.section === "string")
+      .map((row) => [row.section, row.content]),
+  );
+
+  const resolvedContent = getDefaultContent();
+
+  editableSectionKeys.forEach((sectionKey) => {
+    const rowContent = rowsBySection.get(sectionKey);
+
+    if (
+      !rowContent ||
+      typeof rowContent !== "object" ||
+      isEmptyObject(rowContent)
+    ) {
+      resolvedContent[sectionKey] = getNoDataSectionContent(sectionKey);
+      return;
+    }
+
+    resolvedContent[sectionKey] = mergeWithDefaults(
+      fallbackContent[sectionKey],
+      rowContent,
+    );
+  });
+
+  return resolvedContent;
+};
+
+const saveSectionToSectionTable = async (sectionKey, sectionContent) => {
+  const sectionTableName = getSectionTableName(sectionKey);
+
+  if (!sectionTableName) {
+    throw new Error(`No section table mapping for key: ${sectionKey}`);
+  }
+
+  const payload = {
+    id: 1,
+    content: sectionContent ?? {},
+    updated_at: new Date().toISOString(),
+  };
+
+  const { error } = await supabase.from(sectionTableName).upsert(payload, {
+    onConflict: "id",
+  });
+
+  if (!error) {
+    return;
+  }
+
+  if (!isRelationMissingError(error)) {
+    throw new Error(error.message);
+  }
+
+  const { error: legacyError } = await supabase
+    .from(LEGACY_SITE_CONTENT_TABLE)
+    .upsert(
+      {
+        section: sectionKey,
+        content: sectionContent ?? {},
+        updated_at: new Date().toISOString(),
+      },
+      {
+        onConflict: "section",
+      },
+    );
+
+  if (legacyError) {
     throw new Error(
-      `Storage write failed for section "${sectionKey}": ${error.message}`,
+      `Section table save failed: ${error.message}. Legacy fallback also failed: ${legacyError.message}`,
     );
   }
 };
 
-const saveAllSectionsToStorage = async (siteContent) => {
+const saveAllSectionsToSectionTables = async (siteContent) => {
   await Promise.all(
     editableSectionKeys.map((sectionKey) => {
-      return saveSectionToStorage(sectionKey, siteContent[sectionKey]);
+      return saveSectionToSectionTable(sectionKey, siteContent[sectionKey]);
     }),
   );
 };
@@ -147,58 +311,21 @@ export const fetchSiteContent = async () => {
     return fallbackContent;
   }
 
-  let tableFetchError = null;
-  let storageFetchError = null;
-
   try {
-    const { data, error } = await supabase
-      .from(SITE_CONTENT_TABLE)
-      .select("section, content");
-
-    if (error) {
-      throw new Error(error.message);
+    return await fetchSiteContentFromSectionTables(fallbackContent);
+  } catch (error) {
+    if (!isRelationMissingError(error)) {
+      throw new Error(error.message || "Failed to fetch section tables.");
     }
-
-    (data || []).forEach((row) => {
-      if (!row.section || !(row.section in fallbackContent)) {
-        return;
-      }
-
-      fallbackContent[row.section] = mergeWithDefaults(
-        fallbackContent[row.section],
-        row.content,
-      );
-    });
-  } catch (error) {
-    tableFetchError = error;
   }
 
   try {
-    const storageSections = await fetchAllSectionsFromStorage();
-
-    editableSectionKeys.forEach((sectionKey) => {
-      const storageContent = storageSections[sectionKey];
-
-      if (!storageContent || typeof storageContent !== "object") {
-        return;
-      }
-
-      fallbackContent[sectionKey] = mergeWithDefaults(
-        fallbackContent[sectionKey],
-        storageContent,
-      );
-    });
-  } catch (error) {
-    storageFetchError = error;
-  }
-
-  if (tableFetchError && storageFetchError) {
+    return await fetchSiteContentFromLegacyTable(fallbackContent);
+  } catch (legacyError) {
     throw new Error(
-      `Failed to load content from Supabase table and storage. Table: ${tableFetchError.message} | Storage: ${storageFetchError.message}`,
+      `Failed to fetch content from section tables and legacy table. ${legacyError.message}`,
     );
   }
-
-  return fallbackContent;
 };
 
 export const saveSiteContentSection = async (sectionKey, sectionContent) => {
@@ -212,49 +339,7 @@ export const saveSiteContentSection = async (sectionKey, sectionContent) => {
     );
   }
 
-  let tableSaveError = null;
-  let storageSaveError = null;
-
-  try {
-    const { error } = await supabase.from(SITE_CONTENT_TABLE).upsert(
-      {
-        section: sectionKey,
-        content: sectionContent,
-        updated_at: new Date().toISOString(),
-      },
-      {
-        onConflict: "section",
-      },
-    );
-
-    if (error) {
-      throw new Error(error.message);
-    }
-  } catch (error) {
-    tableSaveError = error;
-  }
-
-  try {
-    await saveSectionToStorage(sectionKey, sectionContent);
-  } catch (error) {
-    storageSaveError = error;
-  }
-
-  if (storageSaveError && tableSaveError) {
-    throw new Error(
-      `Saving failed in both table and storage. Table: ${tableSaveError.message} | Storage: ${storageSaveError.message}`,
-    );
-  }
-
-  if (storageSaveError) {
-    throw storageSaveError;
-  }
-
-  if (tableSaveError) {
-    console.warn(
-      `Site content table save failed for section "${sectionKey}": ${tableSaveError.message}`,
-    );
-  }
+  await saveSectionToSectionTable(sectionKey, sectionContent);
 };
 
 export const saveAllSiteContent = async (siteContent) => {
@@ -264,44 +349,5 @@ export const saveAllSiteContent = async (siteContent) => {
     );
   }
 
-  let tableSaveError = null;
-  let storageSaveError = null;
-
-  try {
-    const rows = editableSectionKeys.map((sectionKey) => ({
-      section: sectionKey,
-      content: siteContent[sectionKey],
-      updated_at: new Date().toISOString(),
-    }));
-
-    const { error } = await supabase.from(SITE_CONTENT_TABLE).upsert(rows, {
-      onConflict: "section",
-    });
-
-    if (error) {
-      throw new Error(error.message);
-    }
-  } catch (error) {
-    tableSaveError = error;
-  }
-
-  try {
-    await saveAllSectionsToStorage(siteContent);
-  } catch (error) {
-    storageSaveError = error;
-  }
-
-  if (storageSaveError && tableSaveError) {
-    throw new Error(
-      `Saving failed in both table and storage. Table: ${tableSaveError.message} | Storage: ${storageSaveError.message}`,
-    );
-  }
-
-  if (storageSaveError) {
-    throw storageSaveError;
-  }
-
-  if (tableSaveError) {
-    console.warn(`Site content table save failed: ${tableSaveError.message}`);
-  }
+  await saveAllSectionsToSectionTables(siteContent);
 };
