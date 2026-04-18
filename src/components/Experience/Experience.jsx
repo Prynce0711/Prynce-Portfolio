@@ -1,7 +1,10 @@
 import React, { useEffect, useRef } from "react";
-import Experiences from "./Experiences";
+import { useSiteContent } from "../../context/SiteContentContext";
 
 const Experience = () => {
+  const { siteContent } = useSiteContent();
+  const experience = siteContent.experience || {};
+  const experiences = experience.items || [];
   const vantaRef = useRef(null);
 
   useEffect(() => {
@@ -42,14 +45,16 @@ const Experience = () => {
 
       <div className="relative z-10 p-8">
         <div className="text-center mb-12">
-          <h2 className="text-5xl font-bold text-white">Working Experience</h2>
+          <h2 className="text-5xl font-bold text-white">
+            {experience.title || "Working Experience"}
+          </h2>
           <p className="mt-4 text-lg text-white/70 max-w-2xl mx-auto">
-            A collection of my working experiences.
+            {experience.subtitle || "A collection of my working experiences."}
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-          {Experiences.map((exp, index) => (
+          {experiences.map((exp, index) => (
             <div
               key={index}
               className="card bg-white/10 backdrop-blur-md w-full shadow-2xl hover:shadow-blue-500/20 transition-all duration-500 rounded-3xl border border-white/10 group"

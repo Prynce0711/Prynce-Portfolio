@@ -1,10 +1,9 @@
 import React from "react";
-import { ProjectData } from "./ProjectData";
 
-const ProjectGrid = () => {
+const ProjectGrid = ({ projects = [] }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-      {ProjectData.map((project, index) => (
+      {projects.map((project, index) => (
         <div
           key={index}
           className="group bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 dark:border-gray-700"
@@ -35,7 +34,7 @@ const ProjectGrid = () => {
 
             {/* Tags */}
             <div className="flex flex-wrap gap-2 mb-6">
-              {project.tags.map((tag, tagIndex) => (
+              {(project.tags || []).map((tag, tagIndex) => (
                 <span
                   key={tagIndex}
                   className="px-3 py-1 text-xs font-semibold tracking-wide text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900/30 dark:text-blue-300"

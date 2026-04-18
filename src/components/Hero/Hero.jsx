@@ -1,8 +1,12 @@
 import React from "react";
 import LeftText from "./LeftText";
 import RightImage from "./RightImage";
+import { useSiteContent } from "../../context/SiteContentContext";
 
 function Hero() {
+  const { siteContent } = useSiteContent();
+  const hero = siteContent.hero || {};
+
   return (
     <section
       id="hero"
@@ -15,9 +19,9 @@ function Hero() {
 
       <div className="container mx-auto px-4 md:px-12 lg:px-24 py-12">
         <div className="grid lg:grid-cols-12 gap-12 items-center">
-          <LeftText />
+          <LeftText hero={hero} />
 
-          <RightImage />
+          <RightImage hero={hero} />
         </div>
       </div>
     </section>

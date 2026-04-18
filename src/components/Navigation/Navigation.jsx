@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import NavLink from "./NavLink";
 import MobileButton from "./MobileButton";
 
@@ -23,6 +24,16 @@ function Navigation() {
             Prynce
           </span>
         </a>
+
+        <div className="hidden md:flex md:order-2">
+          <Link
+            to="/admin"
+            className="inline-flex items-center rounded-full border border-cyan-300 bg-cyan-50 px-4 py-2 text-sm font-semibold text-cyan-800 transition hover:bg-cyan-100"
+          >
+            Admin Login
+          </Link>
+        </div>
+
         {/* Mobile Menu Button */}
         <MobileButton onClick={() => setIsOpen(!isOpen)} isOpen={isOpen} />
 
@@ -40,6 +51,14 @@ function Navigation() {
                 {link.label}
               </NavLink>
             ))}
+            <li className="md:hidden mt-2">
+              <Link
+                to="/admin"
+                className="block rounded bg-cyan-600 px-3 py-2 text-white"
+              >
+                Admin Login
+              </Link>
+            </li>
           </ul>
         </div>
       </div>

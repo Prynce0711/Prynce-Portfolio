@@ -1,16 +1,22 @@
 import React from "react";
-import skillGroups from "./SkillGroups";
+import { useSiteContent } from "../../context/SiteContentContext";
+import { skillIconMap } from "../../lib/iconMaps";
 
 const Skills = () => {
+  const { siteContent } = useSiteContent();
+  const skillsContent = siteContent.skills || {};
+  const skillGroups = skillsContent.groups || [];
+
   return (
     <section id="skills" className="py-24 bg-white dark:bg-slate-900 px-4">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-extrabold text-gray-900 dark:text-white mb-4">
-            Technical Stack
+            {skillsContent.title || "Technical Stack"}
           </h2>
           <p className="text-gray-600 dark:text-gray-400">
-            Tools and technologies I use to bring ideas to life.
+            {skillsContent.subtitle ||
+              "Tools and technologies I use to bring ideas to life."}
           </p>
         </div>
 
@@ -25,8 +31,9 @@ const Skills = () => {
               </h3>
 
               <div className="grid grid-cols-2 gap-4">
-                {group.skills.map((skill, sIdx) => {
-                  const Icon = skill.icon;
+                {(group.skills || []).map((skill, sIdx) => {
+                  const Icon =
+                    skillIconMap[skill.iconKey] || skillIconMap.react;
                   return (
                     <div
                       key={sIdx}

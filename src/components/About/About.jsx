@@ -2,11 +2,12 @@ import React from "react";
 import MatrixCanvas from "./MatrixCanva";
 import CodeWindow from "./CodeWindow";
 import TypingText from "./TypingText";
-
-const fullText =
-  "I am a dedicated IT student with a passion for web development and design.\n\nMy journey in the tech world has equipped me with skills in various programming languages and frameworks. I thrive on creating innovative solutions...\n\nBeyond academics, I enjoy collaborating on projects that challenge my creativity and technical skills. I am eager to contribute to impactful projects and grow as a professional in the IT industry.";
+import { useSiteContent } from "../../context/SiteContentContext";
 
 function About() {
+  const { siteContent } = useSiteContent();
+  const fullText = siteContent.about?.fullText || "";
+
   return (
     <section
       id="about"
@@ -16,6 +17,7 @@ function About() {
 
       <CodeWindow>
         <TypingText
+          key={fullText}
           fullText={fullText}
           speed={20}
           className="whitespace-pre-wrap"
