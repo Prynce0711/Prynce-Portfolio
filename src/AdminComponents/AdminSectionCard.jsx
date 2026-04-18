@@ -17,7 +17,10 @@ const AdminSectionCard = ({ sectionKey, title, description, children }) => {
 
     try {
       await saveSection(sectionKey);
-      setStatus({ type: "success", message: "Saved to Supabase." });
+      setStatus({
+        type: "success",
+        message: "Saved to Supabase section folder.",
+      });
     } catch (error) {
       setStatus({
         type: "error",

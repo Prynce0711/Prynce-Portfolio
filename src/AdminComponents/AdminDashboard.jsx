@@ -67,7 +67,7 @@ const AdminDashboard = ({ user, onSignOut }) => {
       await saveAllSections();
       setGlobalStatus({
         type: "success",
-        message: "All sections saved to Supabase.",
+        message: "All sections saved to Supabase section folders.",
       });
     } catch (error) {
       setGlobalStatus({
