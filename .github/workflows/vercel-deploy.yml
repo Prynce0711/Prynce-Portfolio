@@ -51,7 +51,8 @@ jobs:
           echo "url=$DEPLOYMENT_URL" >> "$GITHUB_OUTPUT"
 
       - name: Print Preview URL
-        run: echo "Preview deployment URL: ${{ steps.preview_deploy.outputs.url }}"
+        run: |
+          echo "Preview deployment URL: ${{ steps.preview_deploy.outputs.url }}"
 
   production:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -68,7 +69,7 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install Vercel CLI
+      - name: Install Vercel CLIWW
         run: npm install --global vercel@latest
 
       - name: Pull Production Environment
@@ -84,4 +85,5 @@ jobs:
           echo "url=$DEPLOYMENT_URL" >> "$GITHUB_OUTPUT"
 
       - name: Print Production URL
-        run: echo "Production deployment URL: ${{ steps.production_deploy.outputs.url }}"
+        run: |
+          echo "Production deployment URL: ${{ steps.production_deploy.outputs.url }}"
