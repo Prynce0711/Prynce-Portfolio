@@ -104,7 +104,7 @@ const ContactAdmin = () => {
         {socials.map((social, index) => (
           <div
             key={`social-${index}`}
-            className="rounded-2xl border border-slate-200 bg-slate-50 p-4"
+            className="rounded-2xl border border-slate-700/30 bg-slate-900/40 p-4"
           >
             <div className="mb-3 flex items-center justify-between gap-3">
               <h4 className="text-lg font-bold text-slate-800">
@@ -151,7 +151,7 @@ const ContactAdmin = () => {
         ))}
 
         {socials.length === 0 ? (
-          <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
+          <p className="rounded-xl border border-amber-600/20 bg-amber-900/10 px-4 py-3 text-sm text-amber-200">
             No social cards yet. Click Add Social to create one.
           </p>
         ) : null}

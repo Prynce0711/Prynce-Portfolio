@@ -13,14 +13,14 @@ const Footer = () => {
         <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
 
         {/* Content */}
-        <div className="text-center space-y-2 mt-4">
-          <p className="text-3xl font-light">
+        <div className="text-center space-y-1 mt-4">
+          <p className="text-xl font-medium">
             {footer.headlinePrefix || "Designed and Built by"}{" "}
             <span className="text-white font-semibold">
               {footer.ownerName || "Prynce"}
             </span>
           </p>
-          <p className="text-2xl text-gray-500">
+          <p className="text-sm text-gray-400">
             © {new Date().getFullYear()}{" "}
             {footer.rightsText || "All rights reserved"}
           </p>
@@ -28,11 +28,11 @@ const Footer = () => {
 
         {/* Subtle tech stack credit (optional) */}
         <div className="mt-6 text-center">
-          <p className="text-xl text-gray-600 flex items-center justify-center gap-2">
+          <p className="text-sm text-gray-500 flex items-center justify-center gap-2">
             <span>{footer.madeWithLabel || "Made with"}</span>
             {techStack.map((item, index) => (
               <React.Fragment key={`${item}-${index}`}>
-                <span>·</span>
+                <span className="text-gray-500">·</span>
                 <span
                   className={
                     index === 0

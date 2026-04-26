@@ -6,7 +6,7 @@ const ProjectGrid = ({ projects = [] }) => {
       {projects.map((project, index) => (
         <div
           key={index}
-          className="group bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 dark:border-gray-700"
+          className="group bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm rounded-2xl overflow-hidden shadow-soft hover:shadow-2xl transition-transform duration-300 transform hover:-translate-y-2 border border-gray-100/60 dark:border-gray-700/40"
         >
           {/* Image Container with Zoom Effect */}
           <div className="relative overflow-hidden h-64">

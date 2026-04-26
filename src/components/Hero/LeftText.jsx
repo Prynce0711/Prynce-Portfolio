@@ -27,7 +27,7 @@ const LeftText = ({ hero }) => {
       <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
         <a
           href={primaryButtonHref}
-          className="inline-flex items-center justify-center px-8 py-3.5 text-base font-semibold text-white transition-all duration-200 bg-blue-600 rounded-full hover:bg-blue-700 hover:shadow-lg hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600"
+          className="inline-flex items-center justify-center px-8 py-3.5 text-base font-semibold text-white transition-all duration-200 transform bg-gradient-to-r from-primary to-cyan-400 rounded-full shadow-md hover:shadow-lg hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
         >
           {primaryButtonText}
           <svg

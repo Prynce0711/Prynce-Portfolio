@@ -1,6 +1,5 @@
 import {
   SiBootstrap,
-  SiCss3,
   SiGit,
   SiGithub,
   SiHtml5,
@@ -10,6 +9,8 @@ import {
   SiReact,
   SiTailwindcss,
 } from "react-icons/si";
+
+import { FaCss3Alt } from "react-icons/fa";
 import {
   FaEnvelope,
   FaFacebookF,
@@ -30,7 +31,7 @@ export const skillIconMap = {
   git: SiGit,
   github: SiGithub,
   html5: SiHtml5,
-  css3: SiCss3,
+  css: FaCss3Alt,
 };
 
 export const socialIconMap = {

@@ -16,20 +16,22 @@ const RightCard = ({ contact }) => {
             href={social.link}
             target="_blank"
             rel="noopener noreferrer"
-            className="group p-6 rounded-3xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-blue-500/50 hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 flex flex-col justify-between aspect-square sm:aspect-auto sm:h-48"
+            className="group p-6 rounded-3xl bg-white/60 dark:bg-slate-900/50 border border-slate-100/40 dark:border-slate-800/40 hover:shadow-lg transition-all duration-300 flex flex-col justify-between aspect-square sm:aspect-auto sm:h-48"
           >
             <div className="flex justify-between items-start">
-              <div className={`p-3 rounded-2xl text-2xl ${social.color}`}>
+              <div
+                className={`p-3 rounded-xl text-2xl text-white bg-gradient-to-br from-primary to-cyan-400 shadow ${social.color ? "" : ""}`}
+              >
                 <Icon />
               </div>
-              <FiArrowUpRight className="text-2xl text-slate-300 group-hover:text-blue-500 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
+              <FiArrowUpRight className="text-xl text-slate-400 group-hover:text-primary transition-all" />
             </div>
 
             <div>
               <p className="text-sm font-bold text-slate-400 dark:text-slate-500 mb-1">
                 {social.name}
               </p>
-              <p className="text-lg font-bold text-slate-800 dark:text-slate-200 truncate">
+              <p className="text-lg font-semibold text-slate-800 dark:text-slate-200 truncate">
                 {social.value}
               </p>
             </div>

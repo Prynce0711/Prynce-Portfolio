@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import { motion } from "framer-motion";
 import { useSiteContent } from "../../context/SiteContentContext";
 
 const Experience = () => {
@@ -45,7 +46,7 @@ const Experience = () => {
 
       <div className="relative z-10 p-8">
         <div className="text-center mb-12">
-          <h2 className="text-5xl font-bold text-white">
+          <h2 className="text-4xl md:text-5xl font-bold text-white">
             {experience.title || "Working Experience"}
           </h2>
           <p className="mt-4 text-lg text-white/70 max-w-2xl mx-auto">
@@ -53,24 +54,28 @@ const Experience = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto px-4">
           {experiences.map((exp, index) => (
-            <div
+            <motion.div
               key={index}
-              className="card bg-white/10 backdrop-blur-md w-full shadow-2xl hover:shadow-blue-500/20 transition-all duration-500 rounded-3xl border border-white/10 group"
+              initial={{ opacity: 0, y: 10, scale: 0.985 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ delay: index * 0.06, duration: 0.45 }}
+              viewport={{ once: true }}
+              className="w-full bg-white/6 backdrop-blur-md rounded-3xl border border-white/10 p-6 md:p-8 shadow-soft hover:shadow-lg transition-transform transform hover:-translate-y-1"
             >
-              <div className="card-body p-10">
-                <h2 className="card-title text-3xl font-bold text-white group-hover:text-blue-400 transition-colors">
+              <div>
+                <h3 className="text-2xl md:text-3xl font-semibold text-white mb-1 group-hover:text-blue-400 transition-colors">
                   {exp.title}
-                </h2>
-                <p className="text-sm text-white/60 mt-1">
+                </h3>
+                <p className="text-sm text-white/60">
                   {exp.company} · {exp.year}
                 </p>
                 <p className="text-base text-white/80 mt-4 leading-relaxed">
                   {exp.desc}
                 </p>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

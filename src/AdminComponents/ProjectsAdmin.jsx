@@ -154,7 +154,7 @@ const ProjectsAdmin = () => {
         {items.map((project, index) => (
           <div
             key={`project-${index}`}
-            className="rounded-2xl border border-slate-200 bg-slate-50 p-4"
+            className="rounded-2xl border border-slate-700/30 bg-slate-900/40 p-4"
           >
             <div className="mb-3 flex items-center justify-between gap-3">
               <h4 className="text-lg font-bold text-slate-800">
@@ -184,7 +184,7 @@ const ProjectsAdmin = () => {
                   onChange={(value) => updateProjectItem(index, "image", value)}
                 />
 
-                <div className="rounded-xl border border-slate-200 bg-white p-3">
+                <div className="rounded-xl border border-slate-700/20 bg-slate-800/40 p-3">
                   <p className="text-xs font-semibold uppercase tracking-[0.1em] text-slate-500">
                     Upload Project Image
                   </p>
@@ -196,7 +196,7 @@ const ProjectsAdmin = () => {
                       uploadState.isUploading &&
                       uploadState.projectIndex === index
                     }
-                    className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 shadow-sm outline-none transition file:mr-3 file:rounded-lg file:border-0 file:bg-slate-900 file:px-3 file:py-2 file:text-xs file:font-semibold file:text-white"
+                    className="mt-2 w-full rounded-xl border border-slate-700/20 bg-slate-800/30 px-3 py-2 text-sm text-slate-200 shadow-sm outline-none transition file:mr-3 file:rounded-lg file:border-0 file:bg-slate-900 file:px-3 file:py-2 file:text-xs file:font-semibold file:text-white"
                   />
                   <p className="mt-2 text-xs text-slate-500">
                     Uploads to bucket: {getStorageBucketName()}
@@ -235,7 +235,7 @@ const ProjectsAdmin = () => {
               </div>
 
               {project.image ? (
-                <div className="md:col-span-2 overflow-hidden rounded-xl border border-slate-200 bg-white p-3">
+                <div className="md:col-span-2 overflow-hidden rounded-xl border border-slate-700/20 bg-slate-800/40 p-3">
                   <p className="mb-2 text-xs font-semibold uppercase tracking-[0.1em] text-slate-500">
                     Project Image Preview
                   </p>
@@ -251,7 +251,7 @@ const ProjectsAdmin = () => {
         ))}
 
         {items.length === 0 ? (
-          <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
+          <p className="rounded-xl border border-amber-600/20 bg-amber-900/10 px-4 py-3 text-sm text-amber-200">
             No projects yet. Click Add Project to create your first item.
           </p>
         ) : null}

@@ -16,11 +16,11 @@ function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="fixed w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md">
-      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+    <nav className="fixed w-full z-50 top-4 left-0 px-4">
+      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4 bg-white/60 dark:bg-slate-900/60 rounded-xl shadow-soft backdrop-blur-md">
         {/* LOGO */}
         <a href="#" className="flex items-center space-x-3 rtl:space-x-reverse">
-          <span className="self-center text-2xl font-bold whitespace-nowrap text-gray-900 dark:text-white">
+          <span className="self-center text-lg md:text-2xl font-extrabold whitespace-nowrap text-transparent bg-clip-text bg-gradient-to-r from-primary to-cyan-400">
             Prynce
           </span>
         </a>

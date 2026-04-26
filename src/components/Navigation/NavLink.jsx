@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "framer-motion";
 
 function NavLink({ href, children, isActive }) {
   const baseClasses = "block py-2 px-3 rounded md:p-0";
@@ -9,13 +10,16 @@ function NavLink({ href, children, isActive }) {
 
   return (
     <li>
-      <a
+      <motion.a
         href={href}
         className={`${baseClasses} ${isActive ? activeClasses : inactiveClasses}`}
         aria-current={isActive ? "page" : undefined}
+        whileHover={{ y: -3 }}
+        whileTap={{ scale: 0.98 }}
+        transition={{ type: "spring", stiffness: 260, damping: 20 }}
       >
         {children}
-      </a>
+      </motion.a>
     </li>
   );
 }

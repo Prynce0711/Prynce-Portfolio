@@ -9,15 +9,28 @@ export default function TypingText({
   const [displayed, setDisplayed] = useState("");
 
   useEffect(() => {
+    const text =
+      typeof fullText === "string" ? fullText : String(fullText || "");
+
+    // Reset displayed text before starting a new typing effect
+    setDisplayed("");
+
+    if (!text || text.length === 0) {
+      return undefined;
+    }
+
     let idx = 0;
     const id = setInterval(() => {
-      if (idx < fullText.length) {
-        setDisplayed((p) => p + fullText[idx]);
+      if (idx < text.length) {
+        setDisplayed((p) =>
+          typeof p === "string" ? p + text[idx] : text[idx],
+        );
         idx++;
       } else {
         clearInterval(id);
       }
     }, speed);
+
     return () => clearInterval(id);
   }, [fullText, speed]);
 

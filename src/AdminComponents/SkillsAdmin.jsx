@@ -147,7 +147,7 @@ const SkillsAdmin = () => {
         {groups.map((group, groupIndex) => (
           <div
             key={`skill-group-${groupIndex}`}
-            className="rounded-2xl border border-slate-200 bg-slate-50 p-4"
+            className="rounded-2xl border border-slate-700/30 bg-slate-900/40 p-4"
           >
             <div className="mb-3 flex items-center justify-between gap-3">
               <h4 className="text-lg font-bold text-slate-800">
@@ -183,7 +183,7 @@ const SkillsAdmin = () => {
               {(group.skills || []).map((skill, skillIndex) => (
                 <div
                   key={`skill-${groupIndex}-${skillIndex}`}
-                  className="grid gap-4 rounded-xl border border-slate-200 bg-white p-3 md:grid-cols-4"
+                  className="grid gap-4 rounded-xl border border-slate-700/20 bg-slate-800/40 p-3 md:grid-cols-4"
                 >
                   <InputField
                     label="Skill Name"

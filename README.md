@@ -18,8 +18,18 @@ This project is a Vite + React portfolio with an admin dashboard powered by Supa
 
 ## Install
 
+Preferred (fast):
+
+```bash
+pnpm install
+```
+
+Or with npm/yarn if you prefer:
+
 ```bash
 npm install
+# or
+yarn install
 ```
 
 ## Required Packages
@@ -57,9 +67,11 @@ The SQL sets up:
 - RLS policies (public read, admin-only writes)
 - Storage policies (public read assets, admin-only upload/update/delete)
 
-## Run
+## Run (development)
 
 ```bash
+pnpm run dev
+# or
 npm run dev
 ```
 

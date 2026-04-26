@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { useSiteContent } from "../context/SiteContentContext";
 
 const AdminSectionCard = ({ sectionKey, title, description, children }) => {
@@ -14,14 +15,19 @@ const AdminSectionCard = ({ sectionKey, title, description, children }) => {
     } catch (error) {
       setStatus({
         type: "error",
-        message: error.message || "Saving failed. Check your Supabase policies.",
+        message:
+          error.message || "Saving failed. Check your Supabase policies.",
       });
     }
   };
 
   return (
-    <section
+    <motion.section
       id={`section-${sectionKey}`}
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover={{ translateY: -4 }}
+      transition={{ duration: 0.45 }}
       style={{
         background: "rgba(15, 23, 42, 0.6)",
         backdropFilter: "blur(16px)",
@@ -30,7 +36,8 @@ const AdminSectionCard = ({ sectionKey, title, description, children }) => {
         borderRadius: "20px",
         padding: "1.75rem",
         boxShadow: "0 8px 40px rgba(0,0,0,0.3)",
-        transition: "box-shadow 0.3s",
+        transition: "box-shadow 0.3s, transform 0.2s",
+        willChange: "transform",
       }}
     >
       {/* Header row */}
@@ -85,22 +92,52 @@ const AdminSectionCard = ({ sectionKey, title, description, children }) => {
             transition: "opacity 0.2s, transform 0.1s",
             flexShrink: 0,
           }}
-          onMouseEnter={(e) => { if (!isSaving) e.currentTarget.style.opacity = "0.88"; }}
-          onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
-          onMouseDown={(e) => { if (!isSaving) e.currentTarget.style.transform = "scale(0.97)"; }}
-          onMouseUp={(e) => { e.currentTarget.style.transform = "scale(1)"; }}
+          onMouseEnter={(e) => {
+            if (!isSaving) e.currentTarget.style.opacity = "0.88";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.opacity = "1";
+          }}
+          onMouseDown={(e) => {
+            if (!isSaving) e.currentTarget.style.transform = "scale(0.97)";
+          }}
+          onMouseUp={(e) => {
+            e.currentTarget.style.transform = "scale(1)";
+          }}
         >
           {isSaving ? (
             <>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ animation: "spin 1s linear infinite" }}>
-                <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                style={{ animation: "spin 1s linear infinite" }}
+              >
+                <polyline points="23 4 23 10 17 10" />
+                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
               </svg>
               Saving...
             </>
           ) : (
             <>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+                <polyline points="17 21 17 13 7 13 7 21" />
+                <polyline points="7 3 7 8 15 8" />
               </svg>
               Save Section
             </>
@@ -134,7 +171,13 @@ const AdminSectionCard = ({ sectionKey, title, description, children }) => {
       ) : null}
 
       {/* Divider */}
-      <div style={{ height: "1px", background: "rgba(255,255,255,0.05)", marginBottom: "1.5rem" }} />
+      <div
+        style={{
+          height: "1px",
+          background: "rgba(255,255,255,0.05)",
+          marginBottom: "1.5rem",
+        }}
+      />
 
       {/* Section content */}
       <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
@@ -144,7 +187,7 @@ const AdminSectionCard = ({ sectionKey, title, description, children }) => {
       <style>{`
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
       `}</style>
-    </section>
+    </motion.section>
   );
 };
 
