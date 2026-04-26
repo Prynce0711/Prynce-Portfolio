@@ -24,7 +24,7 @@ function Navigation() {
             Prynce
           </span>
         </a>
-        W{/* Mobile Menu Button */}
+        {/* Mobile Menu Button */}
         <MobileButton onClick={() => setIsOpen(!isOpen)} isOpen={isOpen} />
         {/* MENU LINKS */}
         <div
