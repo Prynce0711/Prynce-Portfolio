@@ -49,6 +49,12 @@ VITE_SUPABASE_URL=https://flfmbzpzvpzrgyxmtouh.supabase.co
 VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_NSO42CsEe3bNScfGxExvqQ_fXsrxTAl
 VITE_ADMIN_EMAILS=pc.clemente11@gmail.com
 VITE_SUPABASE_STORAGE_BUCKET=portfolio-assets
+RESEND_API_KEY=re_xxxxxxxxx
+RESEND_FROM_EMAIL="Portfolio Contact <hello@yourdomain.com>"
+# Optional if you want the form to send to a different inbox.
+CONTACT_TO_EMAIL=pc.clemente11@gmail.com
+# Optional override for local or external form endpoints.
+VITE_CONTACT_FORM_ENDPOINT=/api/contact
 ```
 
 Then restart the dev server after any env change.
@@ -74,6 +80,8 @@ pnpm run dev
 # or
 npm run dev
 ```
+
+The Resend-backed contact form now works in local Vite dev at `/api/contact`. `vercel dev` is still optional if you want to test the full Vercel runtime.
 
 ## Admin Usage
 

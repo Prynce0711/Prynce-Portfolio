@@ -6,7 +6,7 @@ const RightCard = ({ contact }) => {
   const socialLinks = contact?.socials || [];
 
   return (
-    <div className="lg:w-1/2 w-full grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-4">
       {socialLinks.map((social, index) => {
         const Icon = socialIconMap[social.iconKey] || socialIconMap.link;
 

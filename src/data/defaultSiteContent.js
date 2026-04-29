@@ -112,6 +112,7 @@ export const defaultSiteContent = {
   contact: {
     titleLead: "Ready to build",
     titleHighlight: "something great?",
+    email: "pc.clemente11@gmail.com",
     description:
       "I am currently available for freelance work and full-time opportunities. Lets connect and turn your vision into a reality.",
     availabilityText: "Available for New Projects",

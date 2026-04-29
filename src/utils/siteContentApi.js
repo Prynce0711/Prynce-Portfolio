@@ -77,6 +77,7 @@ const NO_DATA_SECTION_CONTENT = {
   contact: {
     titleLead: NO_DATA_TEXT,
     titleHighlight: NO_DATA_TEXT,
+    email: "",
     description: NO_DATA_TEXT,
     availabilityText: NO_DATA_TEXT,
     socials: [

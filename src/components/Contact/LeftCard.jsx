@@ -1,4 +1,5 @@
 import React from "react";
+import { getMailToHref } from "./contactUtils";
 
 const LeftCard = ({ contact }) => {
   const {
@@ -8,7 +9,7 @@ const LeftCard = ({ contact }) => {
     availabilityText = "Available for New Projects",
   } = contact || {};
 
-  const mailHref = contact?.email ? `mailto:${contact.email}` : "#contact";
+  const mailHref = getMailToHref(contact);
 
   return (
     <div className="lg:w-1/2">
@@ -55,7 +56,7 @@ const LeftCard = ({ contact }) => {
           href="#projects"
           className="text-sm text-gray-600 dark:text-gray-300 hover:text-primary transition"
         >
-          See Featured Work →
+          {"See Featured Work ->"}
         </a>
       </div>
     </div>

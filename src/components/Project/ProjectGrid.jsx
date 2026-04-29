@@ -6,7 +6,7 @@ const ProjectGrid = ({ projects = [] }) => {
       {projects.map((project, index) => (
         <div
           key={index}
-          className="group bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm rounded-2xl overflow-hidden shadow-soft hover:shadow-2xl transition-transform duration-300 transform hover:-translate-y-2 border border-gray-100/60 dark:border-gray-700/40"
+          className="group flex h-full flex-col bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm rounded-2xl overflow-hidden shadow-soft hover:shadow-2xl transition-transform duration-300 transform hover:-translate-y-2 border border-gray-100/60 dark:border-gray-700/40"
         >
           {/* Image Container with Zoom Effect */}
           <div className="relative overflow-hidden h-64">
@@ -23,12 +23,12 @@ const ProjectGrid = ({ projects = [] }) => {
           </div>
 
           {/* Content Body */}
-          <div className="p-6 md:p-8">
+          <div className="flex flex-1 flex-col p-6 md:p-8">
             <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-blue-600 transition-colors">
               {project.title}
             </h3>
 
-            <p className="text-gray-600 dark:text-gray-300 mb-6 line-clamp-3">
+            <p className="mb-6 flex-1 text-gray-600 dark:text-gray-300 leading-relaxed whitespace-pre-line">
               {project.description}
             </p>
 

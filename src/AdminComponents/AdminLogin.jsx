@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { allowedAdminEmails, isAdminEmailAllowed } from "../utils/adminAuth";
+import { isAdminEmailAllowed } from "../utils/adminAuth";
 import { supabase } from "../utils/supabase/client";
 
 const AdminLogin = ({ initialMessage = "" }) => {

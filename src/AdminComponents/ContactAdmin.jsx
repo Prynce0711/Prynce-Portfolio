@@ -83,6 +83,13 @@ const ContactAdmin = () => {
           value={contact.availabilityText}
           onChange={(value) => updateContactField("availabilityText", value)}
         />
+        <InputField
+          label="Contact Email"
+          type="email"
+          value={contact.email}
+          onChange={(value) => updateContactField("email", value)}
+          hint="Used by the contact button and email form."
+        />
         <div className="md:col-span-2">
           <TextAreaField
             label="Description"
