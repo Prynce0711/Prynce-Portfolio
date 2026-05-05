@@ -14,7 +14,7 @@ const createHeaders = (requestHeaders) => {
       continue;
     }
 
-    if (value !== undefined) {
+    if (value !== null) {
       headers.set(key, value);
     }
   }
@@ -42,7 +42,7 @@ const contactApiPlugin = (environment) => {
         const url = new URL(req.url || "/api/contact", "http://127.0.0.1");
         const body =
           method === "GET" || method === "HEAD"
-            ? undefined
+            ? null
             : await readRequestBody(req);
 
         try {
@@ -50,7 +50,7 @@ const contactApiPlugin = (environment) => {
             new Request(url, {
               method,
               headers: createHeaders(req.headers),
-              body: body?.length ? body : undefined,
+              body: body?.length ? body : null,
             }),
             environment,
           );

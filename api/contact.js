@@ -67,7 +67,10 @@ export const handleContactRequest = async (
     );
   }
 
-  if (looksLikeUrl(resendFromEmail) || !FROM_EMAIL_PATTERN.test(resendFromEmail)) {
+  if (
+    looksLikeUrl(resendFromEmail) ||
+    !FROM_EMAIL_PATTERN.test(resendFromEmail)
+  ) {
     return jsonResponse(
       {
         error:

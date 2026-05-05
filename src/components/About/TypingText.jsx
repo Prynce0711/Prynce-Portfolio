@@ -16,7 +16,7 @@ export default function TypingText({
     setDisplayed("");
 
     if (!text || text.length === 0) {
-      return undefined;
+      return;
     }
 
     let idx = 0;

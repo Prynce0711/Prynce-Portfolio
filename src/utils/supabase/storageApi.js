@@ -60,7 +60,7 @@ export const uploadPortfolioImage = async ({ file, folder = "general" }) => {
     .upload(objectPath, file, {
       cacheControl: "3600",
       upsert: false,
-      contentType: file.type || undefined,
+      contentType: file.type,
     });
 
   if (uploadError) {

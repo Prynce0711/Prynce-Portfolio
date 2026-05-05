@@ -1,4 +1,3 @@
-import React from "react";
 import LeftText from "./LeftText";
 import RightImage from "./RightImage";
 import { useSiteContent } from "../../context/SiteContentContext";
@@ -10,14 +9,11 @@ function Hero() {
   return (
     <section
       id="hero"
-      className="relative bg-gray-50 dark:bg-gray-900 min-h-screen flex items-center overflow-hidden"
+      className="relative min-h-screen flex items-center overflow-hidden scroll-mt-28"
     >
-      {/* Background Decorative Blob (Optional) */}
-      <div className="absolute top-0 right-0 -mr-20 -mt-20 hidden lg:block">
-        <div className="w-96 h-96 bg-blue-500/20 blur-3xl rounded-full mix-blend-multiply dark:mix-blend-overlay animate-blob"></div>
-      </div>
+      <div className="absolute inset-0 bg-gradient-to-b from-slate-950/70 via-slate-950/30 to-transparent" />
 
-      <div className="container mx-auto px-4 md:px-12 lg:px-24 py-12">
+      <div className="container mx-auto px-6 lg:px-16 py-20 relative z-10">
         <div className="grid lg:grid-cols-12 gap-12 items-center">
           <LeftText hero={hero} />
 
