@@ -1,38 +1,3 @@
-// import { useSiteContent } from "../../context/SiteContentContext";
-// import Section from "../ui/Section";
-// import GlassCard from "../ui/GlassCard";
-
-// function About() {
-//   const { siteContent } = useSiteContent();
-//   const fullText = siteContent.about?.fullText || "";
-//   const profileImage =
-//     siteContent.about?.profileImage || siteContent.hero?.imageSrc || "";
-//   const profileAlt = siteContent.hero?.imageAlt || "";
-//   const paragraphs = fullText.split("\n").filter(Boolean);
-//   const hasText = paragraphs.length > 0;
-
-//   return (
-//     <Section id="about" className="relative">
-//       <div className="container mx-auto px-6 lg:px-16">
-//         <div className="lg:col-span-7 space-y-6">
-//           <p className="text-xs font-semibold uppercase tracking-[0.4em] text-cyan-300/80">
-//             About Me
-//           </p>
-//           {hasText ? (
-//             <div className="space-y-4 text-slate-300/90 leading-relaxed">
-//               {paragraphs.map((text, index) => (
-//                 <p key={`about-${index}`}>{text}</p>
-//               ))}
-//             </div>
-//           ) : null}
-//         </div>
-//       </div>
-//     </Section>
-//   );
-// }
-
-// export default About;
-
 import { useRef, useEffect } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { useSiteContent } from "../../context/SiteContentContext";
