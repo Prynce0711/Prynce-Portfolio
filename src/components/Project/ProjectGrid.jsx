@@ -96,13 +96,6 @@ const ProjectGrid = ({ projects = [] }) => {
                   <div className="text-2xl">🚀</div>
                 </div>
               )}
-              {/* Live Indicator
-              <motion.div
-                className="absolute top-4 right-4 w-6 h-6 bg-green-500/90 rounded-full border-2 border-white/50 flex items-center justify-center shadow-lg"
-                whileHover={{ scale: 1.3 }}
-              >
-                <div className="w-2 h-2 bg-white rounded-full animate-ping" />
-              </motion.div> */}
             </div>
 
             <div className="flex-1 flex flex-col">
@@ -131,7 +124,7 @@ const ProjectGrid = ({ projects = [] }) => {
                   <GlowButton
                     href={project.link}
                     variant="primary"
-                    className="px-6 py-3 text-sm font-bold shadow-lg hover:shadow-cyan-500/50 flex-1 min-w-[120px]"
+                 className="px-6 py-3 text-sm font-bold border-2 border-white/20 backdrop-blur-sm flex-1 min-w-[100px]"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -151,13 +144,6 @@ const ProjectGrid = ({ projects = [] }) => {
                     Code
                   </GlowButton>
                 )}
-                {/* <motion.button
-                  className="p-3 rounded-xl bg-gradient-to-r from-pink-500/20 to-red-500/20 border border-pink-400/30 text-pink-300 hover:text-pink-200 hover:bg-pink-500/30 transition-all duration-300 shadow-lg hover:shadow-pink-500/40 flex items-center justify-center"
-                  whileHover={{ rotate: 5, scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <FaHeart className="w-4 h-4" />
-                </motion.button> */}
               </div>
             </div>
           </div>
