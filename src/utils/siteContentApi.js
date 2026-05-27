@@ -1,0 +1,216 @@
+import {
+  defaultSiteContent,
+  editableSectionKeys,
+} from "../data/defaultSiteContent";
+import { isSupabaseConfigured, supabase } from "./supabase/client";
+import {
+  sanitizeSectionContent,
+  sanitizeSiteContent,
+} from "./contentValidation";
+
+const SECTION_TABLE_MAP = {
+  hero: "site_content_hero",
+  about: "site_content_about",
+  projects: "site_content_projects",
+  skills: "site_content_skills",
+  experience: "site_content_experience",
+  contact: "site_content_contact",
+  footer: "site_content_footer",
+};
+
+const API_BASE = import.meta.env.VITE_SITE_CONTENT_API || "/api/site-content";
+
+const supabaseUrl =
+  import.meta.env.VITE_SUPABASE_URL || import.meta.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey =
+  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+  import.meta.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+const storageBucket =
+  import.meta.env.VITE_SUPABASE_STORAGE_BUCKET || "portfolio-assets";
+
+const restBase = supabaseUrl ? `${supabaseUrl.replace(/\/$/, "")}/rest/v1` : "";
+
+const deepClone = (value) => {
+  if (typeof structuredClone === "function") {
+    return structuredClone(value);
+  }
+
+  return JSON.parse(JSON.stringify(value));
+};
+
+const getSectionTableName = (sectionKey) => SECTION_TABLE_MAP[sectionKey];
+
+const buildRestHeaders = (token) => {
+  const headers = {
+    apikey: supabaseKey,
+  };
+
+  headers.Authorization = `Bearer ${token || supabaseKey}`;
+
+  return headers;
+};
+
+const getAccessToken = async () => {
+  if (!supabase) {
+    return "";
+  }
+
+  const { data } = await supabase.auth.getSession();
+
+  return data?.session?.access_token || "";
+};
+
+const fetchJson = async (url, options) => {
+  const response = await fetch(url, options);
+
+  if (!response.ok) {
+    const errorPayload = await response.json().catch(() => ({}));
+    throw new Error(errorPayload?.error || "Request failed.");
+  }
+
+  return response.json();
+};
+
+const fetchSectionFromRest = async (sectionKey) => {
+  const tableName = getSectionTableName(sectionKey);
+
+  if (!tableName) {
+    throw new Error(`Unknown section key: ${sectionKey}`);
+  }
+
+  const data = await fetchJson(
+    `${restBase}/${tableName}?select=content&id=eq.1&limit=1`,
+    {
+      headers: buildRestHeaders(),
+    },
+  );
+
+  return data?.[0]?.content || {};
+};
+
+const fetchSiteContentFromRest = async () => {
+  const entries = await Promise.all(
+    editableSectionKeys.map(async (sectionKey) => {
+      const sectionContent = await fetchSectionFromRest(sectionKey);
+      return [sectionKey, sectionContent];
+    }),
+  );
+
+  return Object.fromEntries(entries);
+};
+
+const saveSectionToRest = async (sectionKey, sectionContent, token) => {
+  const tableName = getSectionTableName(sectionKey);
+
+  if (!tableName) {
+    throw new Error(`Unknown section key: ${sectionKey}`);
+  }
+
+  const payload = {
+    id: 1,
+    content: sectionContent ?? {},
+    updated_at: new Date().toISOString(),
+  };
+
+  await fetchJson(`${restBase}/${tableName}`, {
+    method: "POST",
+    headers: {
+      ...buildRestHeaders(token),
+      Prefer: "resolution=merge-duplicates",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+};
+
+const saveAllSectionsToRest = async (siteContent, token) => {
+  await Promise.all(
+    editableSectionKeys.map((sectionKey) =>
+      saveSectionToRest(sectionKey, siteContent[sectionKey], token),
+    ),
+  );
+};
+
+export const getDefaultContent = () => deepClone(defaultSiteContent);
+
+export const fetchSiteContent = async () => {
+  const fallbackContent = getDefaultContent();
+
+  try {
+    const apiContent = await fetchJson(API_BASE);
+    return sanitizeSiteContent(apiContent, { supabaseUrl, storageBucket });
+  } catch (error) {
+    if (!isSupabaseConfigured || !restBase || !supabaseKey) {
+      return fallbackContent;
+    }
+
+    const restContent = await fetchSiteContentFromRest();
+    return sanitizeSiteContent(restContent, { supabaseUrl, storageBucket });
+  }
+};
+
+export const saveSiteContentSection = async (sectionKey, sectionContent) => {
+  if (!editableSectionKeys.includes(sectionKey)) {
+    throw new Error(`Unknown section key: ${sectionKey}`);
+  }
+
+  if (!isSupabaseConfigured || !supabaseKey || !restBase) {
+    throw new Error(
+      "Supabase is not configured. Add VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY.",
+    );
+  }
+
+  const token = await getAccessToken();
+
+  if (!token) {
+    throw new Error("Your admin session has expired. Please log in again.");
+  }
+
+  try {
+    await fetchJson(`${API_BASE}?section=${sectionKey}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(sectionContent ?? {}),
+    });
+  } catch (error) {
+    const sanitized = sanitizeSectionContent(sectionKey, sectionContent, {
+      supabaseUrl,
+      storageBucket,
+    });
+    await saveSectionToRest(sectionKey, sanitized, token);
+  }
+};
+
+export const saveAllSiteContent = async (siteContent) => {
+  if (!isSupabaseConfigured || !supabaseKey || !restBase) {
+    throw new Error(
+      "Supabase is not configured. Add VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY.",
+    );
+  }
+
+  const token = await getAccessToken();
+
+  if (!token) {
+    throw new Error("Your admin session has expired. Please log in again.");
+  }
+
+  try {
+    await fetchJson(`${API_BASE}?bulk=true`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ sections: siteContent ?? {} }),
+    });
+  } catch (error) {
+    const sanitized = sanitizeSiteContent(siteContent, {
+      supabaseUrl,
+      storageBucket,
+    });
+    await saveAllSectionsToRest(sanitized, token);
+  }
+};
