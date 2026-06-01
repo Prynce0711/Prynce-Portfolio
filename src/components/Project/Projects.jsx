@@ -1,13 +1,15 @@
 import ProjectGrid from "./ProjectGrid";
 import { useSiteContent } from "../../context/SiteContentContext";
 import Section from "../ui/Section";
-import { FaPalette, FaCode, FaRocket } from "react-icons/fa";
+import { FaPalette, FaRocket } from "react-icons/fa";
 
 function Projects() {
-  const { siteContent } = useSiteContent();
+  const { siteContent, isContentLoading, contentError } = useSiteContent();
   const projects = siteContent.projects || {};
   const hasTitle = Boolean(projects.titleLead || projects.titleHighlight);
   const hasDescription = Boolean(projects.description);
+  const items = projects.items || [];
+  const hasContent = hasTitle || hasDescription || items.length > 0;
 
   return (
     <Section id="projects" className="relative overflow-hidden">
@@ -28,29 +30,43 @@ function Projects() {
             </span>
             <FaPalette className="w-5 h-5 text-pink-400 animate-pulse" />
           </div>
-
-          {hasTitle ? (
+          {isContentLoading ? (
+            <p className="mt-6 text-lg text-slate-300/80">
+              Loading projects...
+            </p>
+          ) : contentError ? (
+            <p className="mt-6 text-lg text-rose-200">
+              Unable to load projects. {contentError}
+            </p>
+          ) : hasTitle ? (
             <h2 className="text-5xl md:text-6xl lg:text-7xl font-black tracking-tight mb-6 bg-gradient-to-r from-white via-cyan-100 to-purple-200 bg-clip-text text-transparent drop-shadow-2xl animate-gradient-flow">
               {projects.titleLead ? `${projects.titleLead} ` : ""}
               {projects.titleHighlight ? (
                 <span className="block">{projects.titleHighlight}</span>
               ) : null}
             </h2>
-          ) : (
-            <h2 className="text-5xl md:text-6xl lg:text-7xl font-black bg-gradient-to-r from-white via-cyan-100 to-purple-200 bg-clip-text text-transparent drop-shadow-2xl">
-              My Creations ✨
-            </h2>
-          )}
+          ) : null}
 
-          {hasDescription ? (
+          {!isContentLoading && !contentError && hasDescription ? (
             <p className="mt-8 text-xl lg:text-2xl text-slate-300/90 max-w-3xl mx-auto font-medium leading-relaxed">
-              {projects.description ||
-                "Handcrafted projects that showcase my skills and passion for creating awesome digital experiences!"}
+              {projects.description}
+            </p>
+          ) : null}
+
+          {!isContentLoading && !contentError && !hasContent ? (
+            <p className="mt-6 text-lg text-slate-300/80">
+              Projects content is not available yet.
             </p>
           ) : null}
         </div>
 
-        <ProjectGrid projects={projects.items || []} />
+        {!isContentLoading && !contentError && items.length ? (
+          <ProjectGrid projects={items} />
+        ) : !isContentLoading && !contentError && hasContent ? (
+          <p className="text-center text-slate-300/80">
+            Project entries are not available yet.
+          </p>
+        ) : null}
       </div>
     </Section>
   );
