@@ -37,7 +37,7 @@ const RightImage = ({ hero }) => {
       >
         <img
           src={imageSrc}
-          alt={imageAlt || ""}
+          alt={imageAlt || "Developer Portfolio"}
           className="w-72 h-72 md:w-80 md:h-80 lg:w-96 lg:h-96 object-cover rounded-2xl border-4 border-white/20 shadow-2xl group-hover:shadow-cyan-400/50 transition-all duration-500"
           loading="lazy"
         />

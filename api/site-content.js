@@ -2,9 +2,16 @@ import {
   sanitizeSectionContent,
   sanitizeSiteContent,
 } from "../src/utils/contentValidation.js";
-import { editableSectionKeys } from "../src/data/defaultSiteContent.js";
 
-const CONTENT_TABLE = "site_content";
+const SECTION_TABLE_MAP = {
+  hero: "site_content_hero",
+  about: "site_content_about",
+  projects: "site_content_projects",
+  skills: "site_content_skills",
+  experience: "site_content_experience",
+  contact: "site_content_contact",
+  footer: "site_content_footer",
+};
 
 const jsonResponse = (payload, status = 200, headers = {}) => {
   return new Response(JSON.stringify(payload), {
@@ -50,85 +57,62 @@ const extractBearerToken = (request) => {
   return header.slice(7).trim();
 };
 
-const SECTION_KEY_COLUMNS = ["section_key", "section"];
+const getSectionTableName = (sectionKey) => SECTION_TABLE_MAP[sectionKey];
 
 const fetchSection = async (sectionKey) => {
-  if (!editableSectionKeys.includes(sectionKey)) {
+  const tableName = getSectionTableName(sectionKey);
+
+  if (!tableName) {
     throw new Error(`Unknown section: ${sectionKey}`);
   }
 
-  let lastError;
+  const response = await fetch(
+    `${restBase}/${tableName}?select=content&id=eq.1&limit=1`,
+    {
+      headers: buildHeaders(),
+    },
+  );
 
-  for (const column of SECTION_KEY_COLUMNS) {
-    const response = await fetch(
-      `${restBase}/${CONTENT_TABLE}?select=content&${column}=eq.${sectionKey}&limit=1`,
-      {
-        headers: buildHeaders(),
-      },
-    );
-
-    if (response.ok) {
-      const data = await response.json();
-      const content = data?.[0]?.content || {};
-
-      return sanitizeSectionContent(sectionKey, content, {
-        supabaseUrl,
-        storageBucket,
-      });
-    }
-
+  if (!response.ok) {
     const errorPayload = await response.json().catch(() => ({}));
-    lastError = new Error(errorPayload?.message || "Failed to fetch section.");
-    const message = String(lastError.message || "").toLowerCase();
-
-    if (!message.includes("column")) {
-      break;
-    }
+    throw new Error(errorPayload?.message || "Failed to fetch section.");
   }
 
-  throw lastError || new Error("Failed to fetch section.");
+  const data = await response.json();
+  const content = data?.[0]?.content || {};
+
+  return sanitizeSectionContent(sectionKey, content, {
+    supabaseUrl,
+    storageBucket,
+  });
 };
 
 const upsertSection = async (sectionKey, content, token) => {
-  if (!editableSectionKeys.includes(sectionKey)) {
+  const tableName = getSectionTableName(sectionKey);
+
+  if (!tableName) {
     throw new Error(`Unknown section: ${sectionKey}`);
   }
 
-  let lastError;
+  const payload = {
+    id: 1,
+    content,
+    updated_at: new Date().toISOString(),
+  };
 
-  for (const column of SECTION_KEY_COLUMNS) {
-    const payload = {
-      [column]: sectionKey,
-      content,
-      updated_at: new Date().toISOString(),
-    };
+  const response = await fetch(`${restBase}/${tableName}`, {
+    method: "POST",
+    headers: {
+      ...buildHeaders(token),
+      Prefer: "resolution=merge-duplicates",
+    },
+    body: JSON.stringify(payload),
+  });
 
-    const response = await fetch(
-      `${restBase}/${CONTENT_TABLE}?on_conflict=section_key`,
-      {
-      method: "POST",
-      headers: {
-        ...buildHeaders(token),
-        Prefer: "resolution=merge-duplicates",
-      },
-      body: JSON.stringify(payload),
-      },
-    );
-
-    if (response.ok) {
-      return;
-    }
-
+  if (!response.ok) {
     const errorPayload = await response.json().catch(() => ({}));
-    lastError = new Error(errorPayload?.message || "Failed to save section.");
-    const message = String(lastError.message || "").toLowerCase();
-
-    if (!message.includes("column")) {
-      break;
-    }
+    throw new Error(errorPayload?.message || "Failed to save section.");
   }
-
-  throw lastError || new Error("Failed to save section.");
 };
 
 export const config = {

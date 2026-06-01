@@ -109,6 +109,17 @@ const LeftText = ({ hero }) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.9, ease: [0.25, 0.1, 0.25, 1] }}
     >
+      {/* Badge - Animated Entry */}
+      <motion.div
+        className="mb-8 inline-flex items-center gap-3 rounded-full border-2 border-cyan-400/40 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] text-cyan-200/90 backdrop-blur-sm shadow-lg"
+        initial={{ scale: 0, rotate: -180 }}
+        animate={{ scale: 1, rotate: 0 }}
+        transition={{ duration: 0.6, delay: 0.3, ease: "backOut" }}
+      >
+        <div className="w-2 h-2 bg-gradient-to-r from-cyan-400 to-blue-400 rounded-full animate-ping" />
+        <span>✨ Full-Stack Developer</span>
+      </motion.div>
+
       {hasName ? (
         <motion.div
           initial={{ opacity: 0 }}
@@ -146,6 +157,13 @@ const LeftText = ({ hero }) => {
           transition={{ duration: 0.6, delay: 1 }}
         >
           {roleText}
+          <motion.span
+            className="inline-block w-2 h-2 bg-cyan-400 rounded-full mx-2 animate-bounce"
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 1.3, type: "spring" }}
+          />
+          <span className="text-cyan-400 font-mono text-sm">live projects</span>
         </motion.p>
       ) : null}
 

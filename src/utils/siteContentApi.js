@@ -8,7 +8,15 @@ import {
   sanitizeSiteContent,
 } from "./contentValidation";
 
-const CONTENT_TABLE = "site_content";
+const SECTION_TABLE_MAP = {
+  hero: "site_content_hero",
+  about: "site_content_about",
+  projects: "site_content_projects",
+  skills: "site_content_skills",
+  experience: "site_content_experience",
+  contact: "site_content_contact",
+  footer: "site_content_footer",
+};
 
 const API_BASE = import.meta.env.VITE_SITE_CONTENT_API || "/api/site-content";
 
@@ -29,6 +37,8 @@ const deepClone = (value) => {
 
   return JSON.parse(JSON.stringify(value));
 };
+
+const getSectionTableName = (sectionKey) => SECTION_TABLE_MAP[sectionKey];
 
 const buildRestHeaders = (token) => {
   const headers = {
@@ -54,68 +64,28 @@ const fetchJson = async (url, options) => {
   const response = await fetch(url, options);
 
   if (!response.ok) {
-    let errorPayload = {};
-    let rawText = "";
-
-    try {
-      errorPayload = await response.clone().json();
-    } catch {
-      try {
-        rawText = await response.text();
-      } catch {
-        rawText = "";
-      }
-    }
-
-    const message =
-      errorPayload?.message ||
-      errorPayload?.error ||
-      rawText ||
-      response.statusText ||
-      "Request failed.";
-
-    throw new Error(`[${response.status}] ${message}`);
+    const errorPayload = await response.json().catch(() => ({}));
+    throw new Error(errorPayload?.error || "Request failed.");
   }
 
-  const text = await response.text();
-
-  if (!text) {
-    return null;
-  }
-
-  return JSON.parse(text);
+  return response.json();
 };
 
-const SECTION_KEY_COLUMNS = ["section_key", "section"];
-
 const fetchSectionFromRest = async (sectionKey) => {
-  if (!editableSectionKeys.includes(sectionKey)) {
+  const tableName = getSectionTableName(sectionKey);
+
+  if (!tableName) {
     throw new Error(`Unknown section key: ${sectionKey}`);
   }
 
-  let lastError;
+  const data = await fetchJson(
+    `${restBase}/${tableName}?select=content&id=eq.1&limit=1`,
+    {
+      headers: buildRestHeaders(),
+    },
+  );
 
-  for (const column of SECTION_KEY_COLUMNS) {
-    try {
-      const data = await fetchJson(
-        `${restBase}/${CONTENT_TABLE}?select=content&${column}=eq.${sectionKey}&limit=1`,
-        {
-          headers: buildRestHeaders(),
-        },
-      );
-
-      return data?.[0]?.content || {};
-    } catch (error) {
-      lastError = error;
-      const message = String(error?.message || "");
-
-      if (!message.toLowerCase().includes("column")) {
-        break;
-      }
-    }
-  }
-
-  throw lastError || new Error("Failed to fetch section content.");
+  return data?.[0]?.content || {};
 };
 
 const fetchSiteContentFromRest = async () => {
@@ -130,45 +100,27 @@ const fetchSiteContentFromRest = async () => {
 };
 
 const saveSectionToRest = async (sectionKey, sectionContent, token) => {
-  if (!editableSectionKeys.includes(sectionKey)) {
+  const tableName = getSectionTableName(sectionKey);
+
+  if (!tableName) {
     throw new Error(`Unknown section key: ${sectionKey}`);
   }
 
-  let lastError;
+  const payload = {
+    id: 1,
+    content: sectionContent ?? {},
+    updated_at: new Date().toISOString(),
+  };
 
-  for (const column of SECTION_KEY_COLUMNS) {
-    const payload = {
-      [column]: sectionKey,
-      content: sectionContent ?? {},
-      updated_at: new Date().toISOString(),
-    };
-
-    try {
-      await fetchJson(
-        `${restBase}/${CONTENT_TABLE}?on_conflict=section_key`,
-        {
-        method: "POST",
-        headers: {
-          ...buildRestHeaders(token),
-          Prefer: "resolution=merge-duplicates",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-        },
-      );
-
-      return;
-    } catch (error) {
-      lastError = error;
-      const message = String(error?.message || "");
-
-      if (!message.toLowerCase().includes("column")) {
-        break;
-      }
-    }
-  }
-
-  throw lastError || new Error("Failed to save section content.");
+  await fetchJson(`${restBase}/${tableName}`, {
+    method: "POST",
+    headers: {
+      ...buildRestHeaders(token),
+      Prefer: "resolution=merge-duplicates",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
 };
 
 const saveAllSectionsToRest = async (siteContent, token) => {

@@ -5,7 +5,7 @@ import Section from "../ui/Section";
 import GlassCard from "../ui/GlassCard";
 
 const Skills = () => {
-  const { siteContent, isContentLoading, contentError } = useSiteContent();
+  const { siteContent } = useSiteContent();
   const skillsContent = siteContent.skills || {};
   const skillGroups = skillsContent.groups || [];
   const skillItems = skillGroups.flatMap((group) =>
@@ -47,20 +47,9 @@ const Skills = () => {
               {skillsContent.subtitle}
             </p>
           ) : null}
-          {isContentLoading ? (
-            <p className="mt-4 text-slate-300/80">Loading skills...</p>
-          ) : contentError ? (
-            <p className="mt-4 text-rose-200">
-              Unable to load skills. {contentError}
-            </p>
-          ) : !skillItems.length ? (
-            <p className="mt-4 text-slate-300/80">
-              Skills content is not available yet.
-            </p>
-          ) : null}
         </div>
 
-        {!isContentLoading && !contentError && skillItems.length ? (
+        {skillItems.length ? (
           <motion.div
             variants={containerVariants}
             initial="hidden"

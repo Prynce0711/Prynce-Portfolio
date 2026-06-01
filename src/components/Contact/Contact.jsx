@@ -30,6 +30,7 @@
 
 import ContactForm from "./ContactForm";
 import LeftCard from "./LeftCard";
+import RightCard from "./RightCard";
 import { useSiteContent } from "../../context/SiteContentContext";
 import Section from "../ui/Section";
 
@@ -277,16 +278,8 @@ function injectContactStyles() {
 const Contact = () => {
   injectContactStyles();
 
-  const { siteContent, isContentLoading, contentError } = useSiteContent();
+  const { siteContent } = useSiteContent();
   const contact = siteContent.contact || {};
-  const hasContactContent = Boolean(
-    contact.titleLead ||
-      contact.titleHighlight ||
-      contact.description ||
-      contact.availabilityText ||
-      contact.email ||
-      (contact.socials || []).length,
-  );
 
   return (
     <Section id="contact" className="ct-section">
@@ -308,19 +301,6 @@ const Contact = () => {
           <h2 className="ct-header-title">
             Get in <em>Touch</em>
           </h2>
-          {isContentLoading ? (
-            <p className="mt-4 text-sm text-slate-300/80">
-              Loading contact content...
-            </p>
-          ) : contentError ? (
-            <p className="mt-4 text-sm text-rose-200">
-              Unable to load contact content. {contentError}
-            </p>
-          ) : !hasContactContent ? (
-            <p className="mt-4 text-sm text-slate-300/80">
-              Contact content is not available yet.
-            </p>
-          ) : null}
         </header>
         {/* ── bento grid ── */}
         <div className="ct-bento">
@@ -331,9 +311,7 @@ const Contact = () => {
               <span className="ct-block-label-text">About</span> */}
               <div className="ct-block-label-line" />
             </div>
-            {!isContentLoading && !contentError && hasContactContent ? (
-              <LeftCard contact={contact} />
-            ) : null}
+            <LeftCard contact={contact} />
           </div>
           {/* CELL 2 — contact form (tall, spans 2 rows on md+) */}
           <div className="ct-bento-form">
