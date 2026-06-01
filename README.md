@@ -1,22 +1,26 @@
 # Prynce Portfolio
 
-This project is a Vite + React portfolio with an admin dashboard powered by Supabase Auth and Postgres.
+A Vite + React portfolio with a Supabase-backed admin dashboard and a Resend-powered contact form.
 
-## Features
+## Highlights
 
-- Public portfolio page at `/`
-- Admin login and CMS at `/admin`
-- Editable sections:
-  - Hero
-  - About
-  - Projects
-  - Skills
-  - Experience
-  - Contact
-  - Footer
-- Save section content to Supabase `site_content` table
+- Public site at `/`
+- Admin CMS at `/admin`
+- Editable sections: Hero, About, Projects, Skills, Experience, Contact, Footer
+- Content stored in Supabase `site_content`
+- Image uploads stored in Supabase Storage
 
-## Install
+## Tech Stack
+
+- Vite + React
+- Tailwind CSS + DaisyUI
+- Supabase Auth, Postgres, and Storage
+- Resend (contact email)
+- Vercel (deployment)
+
+## Getting Started
+
+### Install
 
 Preferred (fast):
 
@@ -24,7 +28,7 @@ Preferred (fast):
 pnpm install
 ```
 
-Or with npm/yarn if you prefer:
+Or with npm/yarn:
 
 ```bash
 npm install
@@ -32,15 +36,7 @@ npm install
 yarn install
 ```
 
-## Required Packages
-
-These are already added in this project:
-
-```bash
-npm install @supabase/supabase-js @supabase/ssr react-router-dom
-```
-
-## Environment Variables
+### Environment Variables
 
 Create `.env.local` in the project root:
 
@@ -57,15 +53,15 @@ CONTACT_TO_EMAIL=pc.clemente11@gmail.com
 VITE_CONTACT_FORM_ENDPOINT=/api/contact
 ```
 
-Then restart the dev server after any env change.
+Restart the dev server after any env change.
 
-## Supabase SQL Setup
+### Supabase SQL Setup
 
 1. Open Supabase SQL Editor.
 2. Run the SQL in `supabase/site_content.sql`.
 3. Ensure your admin email is inserted in `public.admin_users`.
 
-The SQL sets up:
+This SQL sets up:
 
 - `public.site_content` table for section JSON
 - `public.admin_users` allowlist table
@@ -73,22 +69,45 @@ The SQL sets up:
 - RLS policies (public read, admin-only writes)
 - Storage policies (public read assets, admin-only upload/update/delete)
 
-## Run (development)
+## Scripts
 
 ```bash
 pnpm run dev
-# or
-npm run dev
+pnpm run build
+pnpm run preview
+pnpm run lint
 ```
 
-The Resend-backed contact form now works in local Vite dev at `/api/contact`. `vercel dev` is still optional if you want to test the full Vercel runtime.
+The Resend-backed contact form works in local Vite dev at `/api/contact`. `vercel dev` is optional for testing the Vercel runtime.
 
 ## Admin Usage
 
-1. Open `/admin`
-2. Log in using an Auth user created in Supabase Authentication
-3. Edit sections and click `Save Section` or `Save All`
-4. In Hero and Projects editors, upload images directly to Supabase Storage
+1. Open `/admin`.
+2. Log in using a Supabase Auth user.
+3. Edit sections and click `Save Section` or `Save All`.
+4. In Hero and Projects editors, upload images to Supabase Storage.
+
+## Troubleshooting / FAQ
+
+**Admin login fails**
+
+- Make sure the user exists in Supabase Auth and the email is listed in `VITE_ADMIN_EMAILS`.
+- Confirm your Supabase URL and publishable key are correct, then restart the dev server.
+
+**Edits do not persist**
+
+- Verify the `site_content` table and RLS policies are set up, and that your admin email is in the allowlist.
+- Check for blocked requests in the browser network tab.
+
+**Images do not show after upload**
+
+- Confirm the storage bucket name matches `VITE_SUPABASE_STORAGE_BUCKET`.
+- Ensure storage read policies allow public access for assets.
+
+**Contact form does not send**
+
+- Ensure `RESEND_API_KEY` and `RESEND_FROM_EMAIL` are set and valid.
+- If you changed environment values, restart the dev server.
 
 ## Optional Agent Skill
 
@@ -98,38 +117,34 @@ If you want Supabase-focused coding skills:
 npx skills add supabase/agent-skills
 ```
 
-## Vercel Blocked Deployment Meaning
+## Deployment (Vercel)
 
-If you see this Vercel message:
+If you see:
 
 `The deployment was blocked because the commit author did not have contributing access to the project on Vercel.`
 
-it means your project is using Vercel Git auto-deploy, but the commit author is not recognized as a collaborator for that Vercel project. On Hobby plan with private repos, team collaboration is limited, so the auto-deploy gets blocked.
+It means Vercel Git auto-deploy is enabled but the commit author is not a recognized collaborator. On Hobby plans with private repos, team access is limited.
 
-## Vercel via GitHub Actions
+### GitHub Actions Deploy
 
-This repo includes a workflow at `.github/workflows/vercel-deploy.yml` that deploys with Vercel CLI using your own token.
+This repo includes `.github/workflows/vercel-deploy.yml` which deploys using the Vercel CLI.
 
-### Required GitHub Secrets
-
-Add these in GitHub repository settings under Secrets and variables > Actions:
+Add these GitHub Secrets (Settings > Secrets and variables > Actions):
 
 - `VERCEL_TOKEN`
 - `VERCEL_ORG_ID`
 - `VERCEL_PROJECT_ID`
 
-You can get IDs from local Vercel link:
+You can get IDs from a local Vercel link:
 
 ```bash
 vercel link
 cat .vercel/project.json
 ```
 
-### Workflow Behavior
+Workflow behavior:
 
 - Push to `main`: production deploy
 - Pull request to `main`: preview deploy (non-fork PRs)
 
-### Important
-
-If you keep Vercel Git integration enabled, you may still see blocked auto-deploy entries from Git integration while GitHub Actions deploys succeed. To avoid confusion, use one deployment path consistently.
+If you keep Vercel Git integration enabled, you may still see blocked auto-deploy entries while GitHub Actions succeeds. Use one deployment path consistently.
