@@ -51,11 +51,15 @@ import GlowButton from "../ui/GlowButton";
 
 const LeftCard = ({ contact }) => {
   const {
-    titleLead = "Ready to build",
-    titleHighlight = "something great?",
-    description = "I am currently available for freelance work and full-time opportunities. Lets connect and turn your vision into a reality.",
-    availabilityText = "Available for New Projects",
+    titleLead,
+    titleHighlight,
+    description,
+    availabilityText,
   } = contact || {};
+
+  const hasContent = Boolean(
+    titleLead || titleHighlight || description || availabilityText,
+  );
 
   const mailHref = getMailToHref(contact);
 
@@ -67,31 +71,45 @@ const LeftCard = ({ contact }) => {
         <span className="lc-eyebrow-text">Contact</span>
       </div>
 
-      {/* ── display headline ── */}
-      <h2 className="lc-headline">
-        {titleLead}
-        <br />
-        <em className="lc-headline-em">{titleHighlight}</em>
-      </h2>
+      {hasContent ? (
+        <>
+          {/* ── display headline ── */}
+          {(titleLead || titleHighlight) && (
+            <h2 className="lc-headline">
+              {titleLead || ""}
+              {titleHighlight ? (
+                <>
+                  <br />
+                  <em className="lc-headline-em">{titleHighlight}</em>
+                </>
+              ) : null}
+            </h2>
+          )}
 
-      {/* ── description ── */}
-      <p className="lc-description">{description}</p>
+          {/* ── description ── */}
+          {description ? <p className="lc-description">{description}</p> : null}
 
-      {/* ── availability chip ── */}
-      <div className="lc-chip">
-        <span className="lc-chip-dot" />
-        {availabilityText}
-      </div>
+          {/* ── availability chip ── */}
+          {availabilityText ? (
+            <div className="lc-chip">
+              <span className="lc-chip-dot" />
+              {availabilityText}
+            </div>
+          ) : null}
 
-      {/* ── CTA buttons ── */}
-      <div className="lc-actions">
-        <GlowButton href={mailHref} variant="primary">
-          Contact Me
-        </GlowButton>
-        <GlowButton href="#projects" variant="secondary">
-          View Projects
-        </GlowButton>
-      </div>
+          {/* ── CTA buttons ── */}
+          <div className="lc-actions">
+            <GlowButton href={mailHref} variant="primary">
+              Contact Me
+            </GlowButton>
+            <GlowButton href="#projects" variant="secondary">
+              View Projects
+            </GlowButton>
+          </div>
+        </>
+      ) : (
+        <p className="lc-description">Contact content is not available yet.</p>
+      )}
 
       {/* ── decorative corner accent ── */}
       <div className="lc-corner-accent" aria-hidden>

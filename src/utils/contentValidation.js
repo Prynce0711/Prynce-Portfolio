@@ -228,6 +228,7 @@ export const sanitizeSectionContent = (sectionKey, value, options = {}) => {
         rightsText: sanitizeText(raw.rightsText, 120),
         madeWithLabel: sanitizeText(raw.madeWithLabel, 80),
         techStack: sanitizeTechStack(raw.techStack),
+        socials: sanitizeSocials(raw.socials),
       };
     default:
       return {};

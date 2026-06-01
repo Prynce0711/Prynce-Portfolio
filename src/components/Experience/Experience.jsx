@@ -6,14 +6,16 @@ import {
   FaRocket,
   FaCode,
   FaGraduationCap,
-  FaStar,
   FaBolt,
 } from "react-icons/fa";
 
 const Experience = () => {
-  const { siteContent } = useSiteContent();
+  const { siteContent, isContentLoading, contentError } = useSiteContent();
   const experience = siteContent.experience || {};
   const experiences = experience.items || [];
+  const hasHeader = Boolean(experience.title || experience.subtitle);
+  const hasContent = hasHeader || experiences.length > 0;
+  const hasItems = experiences.length > 0;
 
   // Fun icons for different experience types
   const getExperienceIcon = (title, company) => {
@@ -92,26 +94,45 @@ const Experience = () => {
             <div className="w-20 h-1 bg-gradient-to-r from-transparent via-white/50 to-transparent rounded-full animate-shimmer" />
           </motion.div>
 
-          <motion.h2
-            className="text-4xl md:text-5xl lg:text-6xl font-black bg-gradient-to-r from-white via-cyan-200 to-purple-300 bg-clip-text text-transparent drop-shadow-2xl mb-6"
-            initial={{ scale: 0.8 }}
-            whileInView={{ scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, type: "spring" }}
-          >
-            {experience.title || "My Developer Journey 🚀"}
-          </motion.h2>
+          {isContentLoading ? (
+            <p className="text-lg lg:text-xl text-slate-300/90 max-w-3xl mx-auto font-medium leading-relaxed">
+              Loading experience...
+            </p>
+          ) : contentError ? (
+            <p className="text-lg lg:text-xl text-rose-200 max-w-3xl mx-auto font-medium leading-relaxed">
+              Unable to load experience. {contentError}
+            </p>
+          ) : hasHeader ? (
+            <>
+              <motion.h2
+                className="text-4xl md:text-5xl lg:text-6xl font-black bg-gradient-to-r from-white via-cyan-200 to-purple-300 bg-clip-text text-transparent drop-shadow-2xl mb-6"
+                initial={{ scale: 0.8 }}
+                whileInView={{ scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, type: "spring" }}
+              >
+                {experience.title}
+              </motion.h2>
 
-          <motion.p
-            className="text-lg lg:text-xl text-slate-300/90 max-w-3xl mx-auto font-medium leading-relaxed"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
-          >
-            {experience.subtitle ||
-              "From code newbie to shipping products. Here's the fun path that made me who I am today! 💻✨"}
-          </motion.p>
+              {experience.subtitle ? (
+                <motion.p
+                  className="text-lg lg:text-xl text-slate-300/90 max-w-3xl mx-auto font-medium leading-relaxed"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.3 }}
+                >
+                  {experience.subtitle}
+                </motion.p>
+              ) : null}
+            </>
+          ) : null}
+
+          {!isContentLoading && !contentError && !hasContent ? (
+            <p className="text-lg lg:text-xl text-slate-300/80 max-w-3xl mx-auto font-medium leading-relaxed">
+              Experience content is not available yet.
+            </p>
+          ) : null}
         </motion.div>
 
         {/* Timeline - Super Fun! */}
@@ -125,79 +146,73 @@ const Experience = () => {
             transition={{ duration: 2, ease: "easeOut" }}
           />
 
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, amount: 0.3 }}
-            className="space-y-12"
-          >
-            {experiences.map((exp, index) => {
-              const Icon = getExperienceIcon(exp.title, exp.company);
-              const isEven = index % 2 === 0;
+          {!isContentLoading && !contentError && hasItems ? (
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.3 }}
+              className="space-y-12"
+            >
+              {experiences.map((exp, index) => {
+                const Icon = getExperienceIcon(exp.title, exp.company);
+                const isEven = index % 2 === 0;
 
-              return (
-                <motion.div
-                  key={index}
-                  variants={itemVariants}
-                  className={`relative flex ${isEven ? "flex-row-reverse" : ""} items-center gap-8`}
-                >
-                  {/* Timeline Dot - Animated */}
+                return (
                   <motion.div
-                    className="absolute left-1/2 transform -translate-x-1/2 w-6 h-6 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-2xl shadow-xl border-4 border-white/20 flex items-center justify-center"
-                    whileHover={{ scale: 1.3, rotate: 180 }}
-                    transition={{ type: "spring" }}
+                    key={index}
+                    variants={itemVariants}
+                    className={`relative flex ${isEven ? "flex-row-reverse" : ""} items-center gap-8`}
                   >
-                    <div className="w-2 h-2 bg-white rounded-full animate-ping" />
-                  </motion.div>
+                    {/* Timeline Dot - Animated */}
+                    <motion.div
+                      className="absolute left-1/2 transform -translate-x-1/2 w-6 h-6 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-2xl shadow-xl border-4 border-white/20 flex items-center justify-center"
+                      whileHover={{ scale: 1.3, rotate: 180 }}
+                      transition={{ type: "spring" }}
+                    >
+                      <div className="w-2 h-2 bg-white rounded-full animate-ping" />
+                    </motion.div>
 
-                  {/* Experience Card */}
-                  <GlassCard
-                    className={`w-full max-w-md p-8 shadow-2xl hover:shadow-cyan-500/30 transition-all duration-500 group hover:-translate-y-2 ${isEven ? "ml-auto" : "mr-auto"}`}
-                  >
-                    {/* Header with Icon */}
-                    <div className="flex items-start gap-4 mb-6">
-                      <motion.div
-                        className="p-3 bg-gradient-to-br from-cyan-500/20 to-purple-500/20 rounded-2xl border-2 border-white/20 backdrop-blur-sm shadow-lg flex-shrink-0 group-hover:scale-110 transition-all duration-300"
-                        whileHover={{ rotate: 360 }}
-                      >
-                        <Icon className="w-6 h-6 text-cyan-300 shadow-lg" />
-                      </motion.div>
+                    {/* Experience Card */}
+                    <GlassCard
+                      className={`w-full max-w-md p-8 shadow-2xl hover:shadow-cyan-500/30 transition-all duration-500 group hover:-translate-y-2 ${isEven ? "ml-auto" : "mr-auto"}`}
+                    >
+                      {/* Header with Icon */}
+                      <div className="flex items-start gap-4 mb-6">
+                        <motion.div
+                          className="p-3 bg-gradient-to-br from-cyan-500/20 to-purple-500/20 rounded-2xl border-2 border-white/20 backdrop-blur-sm shadow-lg flex-shrink-0 group-hover:scale-110 transition-all duration-300"
+                          whileHover={{ rotate: 360 }}
+                        >
+                          <Icon className="w-6 h-6 text-cyan-300 shadow-lg" />
+                        </motion.div>
 
-                      <div>
-                        <div className="flex items-center gap-2 text-xs uppercase tracking-[0.3em] font-bold text-cyan-300/80 mb-1">
-                          <span>{exp.year}</span>
-                          <span className="text-yellow-400">⚡</span>
-                          <span>{exp.company}</span>
+                        <div>
+                          <div className="flex items-center gap-2 text-xs uppercase tracking-[0.3em] font-bold text-cyan-300/80 mb-1">
+                            <span>{exp.year}</span>
+                            <span className="text-yellow-400">⚡</span>
+                            <span>{exp.company}</span>
+                          </div>
+                          <h3 className="text-xl font-black text-white group-hover:text-cyan-300 transition-colors duration-300">
+                            {exp.title}
+                          </h3>
                         </div>
-                        <h3 className="text-xl font-black text-white group-hover:text-cyan-300 transition-colors duration-300">
-                          {exp.title}
-                        </h3>
                       </div>
-                    </div>
 
-                    {/* Description */}
-                    <p className="text-slate-300/90 leading-relaxed text-sm lg:text-base font-medium">
-                      {exp.desc}
-                    </p>
-
-                    {/* Fun Stats */}
-                    <div className="mt-6 pt-6 border-t border-white/10 flex items-center gap-6">
-                      <div className="flex items-center gap-2 text-xs text-cyan-400 font-mono">
-                        <FaStar className="w-3 h-3 fill-current" />
-                        <span>Featured Project</span>
-                      </div>
-                      <div className="w-px h-4 bg-white/20" />
-                      <div className="flex items-center gap-1 text-xs text-purple-400 font-mono">
-                        <span>💻</span>
-                        <span>Production Ready</span>
-                      </div>
-                    </div>
-                  </GlassCard>
-                </motion.div>
-              );
-            })}
-          </motion.div>
+                      {/* Description */}
+                      <p className="text-slate-300/90 leading-relaxed text-sm lg:text-base font-medium">
+                        {exp.desc}
+                      </p>
+                    </GlassCard>
+                  </motion.div>
+                );
+              })}
+            </motion.div>
+          ) : null}
+          {!isContentLoading && !contentError && !hasItems ? (
+            <p className="text-center text-slate-300/80">
+              Experience entries are not available yet.
+            </p>
+          ) : null}
         </div>
       </div>
     </Section>
