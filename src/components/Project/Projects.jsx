@@ -13,13 +13,6 @@ function Projects() {
 
   return (
     <Section id="projects" className="relative overflow-hidden">
-      {/* Animated Background Grid */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 rounded-3xl blur-3xl animate-pulse-slow" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-r from-pink-500/10 to-orange-500/10 rounded-3xl blur-3xl animate-pulse animation-delay-3s" />
-        <div className="absolute top-3/4 left-3/4 w-48 h-48 bg-gradient-to-r from-yellow-500/10 to-cyan-500/10 rounded-3xl blur-2xl animate-bounce-slow" />
-      </div>
-
       <div className="container mx-auto px-6 lg:px-16 relative z-10">
         {/* Epic Header */}
         <div className="text-center mb-20 lg:mb-24">
