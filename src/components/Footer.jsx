@@ -59,7 +59,7 @@ const Footer = () => {
     hasFooterText || techStack.length > 0 || socials.length > 0;
 
   return (
-    <footer className="relative border-t border-white/10 py-16 text-slate-400">
+    <footer className="relative border-t border-white/10 py-10 text-slate-400">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-400/60 to-transparent" />
 
       <div className="container mx-auto px-6">
@@ -76,7 +76,7 @@ const Footer = () => {
             Footer content is not available yet.
           </div>
         ) : null}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-20 mb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 lg:gap-2 mb-2">
           {/* Social Links - Center Column */}
           {socials.length ? (
             <div className="lg:col-span-1 flex flex-col items-center lg:items-start">
@@ -149,7 +149,6 @@ const Footer = () => {
         </div>
 
         {/* Bottom Divider */}
-        <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
       </div>
     </footer>
   );

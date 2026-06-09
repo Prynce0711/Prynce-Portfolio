@@ -43,6 +43,46 @@
   .glass-card {
     @apply bg-white/5 border border-white/10 backdrop-blur-xl shadow-soft;
   }
+
+  .spotlight-fixed-background {
+    @apply pointer-events-none fixed inset-0 overflow-hidden;
+    background: #050505;
+    z-index: 0;
+  }
+
+  .spotlight-overlay {
+    @apply absolute inset-0 overflow-hidden;
+  }
+
+  .spotlight {
+    @apply absolute rounded-full;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.055) 34%, transparent 70%);
+    filter: blur(2px);
+    height: clamp(34rem, 72vw, 74rem);
+    opacity: 0.82;
+    transform-origin: center;
+    width: clamp(34rem, 72vw, 76rem);
+  }
+
+  .spotlight-left {
+    left: 22%;
+    top: -24%;
+  }
+
+  .spotlight-mid {
+    left: 18%;
+    top: 8%;
+  }
+
+  .spotlight-right {
+    right: -12%;
+    top: 24%;
+  }
+
+  .spotlight-content {
+    @apply relative w-full;
+    z-index: 1;
+  }
 }
 
 @layer utilities {

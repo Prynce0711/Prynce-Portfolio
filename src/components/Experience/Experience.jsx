@@ -66,12 +66,6 @@ const Experience = () => {
 
   return (
     <Section id="experience" className="relative overflow-hidden">
-      {/* Floating Particles */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-full blur-xl animate-float-slow" />
-        <div className="absolute bottom-20 right-20 w-24 h-24 bg-gradient-to-r from-pink-500/20 to-orange-500/20 rounded-full blur-xl animate-float animation-delay-2s" />
-      </div>
-
       <div className="container mx-auto px-6 lg:px-16 relative z-10">
         {/* Header - Fun Animated */}
         <motion.div

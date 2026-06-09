@@ -290,13 +290,6 @@ const Contact = () => {
 
   return (
     <Section id="contact" className="ct-section">
-      {/* bg */}
-      <div className="ct-bg" aria-hidden>
-        <div className="ct-bg-blob-a" />
-        <div className="ct-bg-blob-b" />
-        <div className="ct-bg-grid" />
-      </div>
-
       <div className="ct-container">
         {/* ── header ── */}
         <header className="ct-header">
