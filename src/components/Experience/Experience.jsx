@@ -7,6 +7,7 @@ import {
   FaCode,
   FaGraduationCap,
   FaBolt,
+  FaStar,
 } from "react-icons/fa";
 
 const Experience = () => {
