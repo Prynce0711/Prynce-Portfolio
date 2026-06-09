@@ -44,6 +44,7 @@ export const defaultSiteContent = {
     rightsText: "",
     madeWithLabel: "",
     techStack: [],
+    socials: [],
   },
 };
 

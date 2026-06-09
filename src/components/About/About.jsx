@@ -144,7 +144,7 @@ function DecoRing({ size, style, delay = 0 }) {
    About
 ───────────────────────────────────────────────── */
 function About() {
-  const { siteContent } = useSiteContent();
+  const { siteContent, isContentLoading, contentError } = useSiteContent();
   const fullText = siteContent.about?.fullText || "";
   const paragraphs = fullText.split("\n").filter(Boolean);
   const hasText = paragraphs.length > 0;
@@ -303,7 +303,27 @@ function About() {
           </motion.h2>
 
           {/* ── repel text ── */}
-          {hasText && (
+          {isContentLoading ? (
+            <p
+              style={{
+                fontFamily: "'Space Mono', monospace",
+                fontSize: 12,
+                color: "rgba(148,163,184,0.7)",
+              }}
+            >
+              Loading about content...
+            </p>
+          ) : contentError ? (
+            <p
+              style={{
+                fontFamily: "'Space Mono', monospace",
+                fontSize: 12,
+                color: "rgba(248,113,113,0.9)",
+              }}
+            >
+              Unable to load about content. {contentError}
+            </p>
+          ) : hasText ? (
             <div style={{ userSelect: "none" }}>
               {paraGroups.map((words, pi) => (
                 <p key={pi} style={{ margin: "0 0 1rem" }}>
@@ -323,6 +343,16 @@ function About() {
                 </p>
               ))}
             </div>
+          ) : (
+            <p
+              style={{
+                fontFamily: "'Space Mono', monospace",
+                fontSize: 12,
+                color: "rgba(148,163,184,0.7)",
+              }}
+            >
+              About content is not available yet.
+            </p>
           )}
 
           {/* ── hint ── */}

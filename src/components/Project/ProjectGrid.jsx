@@ -3,9 +3,6 @@ import GlowButton from "../ui/GlowButton";
 import {
   FaGithub,
   FaExternalLinkAlt,
-  FaHeart,
-  FaStar,
-  FaFire,
 } from "react-icons/fa";
 
 const ProjectGrid = ({ projects = [] }) => {
